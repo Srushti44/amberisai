@@ -1,0 +1,5 @@
+# Combined dependency list for deployment
+# includes backend and audio module packages
+
+-r amberisai/requirements.txt
+-r audio_module/requirements.txt
