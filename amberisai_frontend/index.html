@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AmberisAI — Infant Care Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root { --black:#000; --white:#fff; --grey:#888; --dark:#1a1a1a; --mid:#2e2e2e; --light:#e0e0e0; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--black);color:var(--white);font-family:'Barlow',sans-serif;overflow-x:hidden;}
+.screen{display:none;min-height:100vh;flex-direction:column;}
+.screen.active{display:flex;}
+
+/* ── AUTH SCREENS ── */
+.auth-wrap{min-height:100vh;display:flex;align-items:stretch;}
+.auth-left{flex:1;background:var(--white);color:var(--black);padding:60px 48px;display:flex;flex-direction:column;justify-content:center;}
+.auth-right{width:440px;padding:60px 48px;display:flex;flex-direction:column;justify-content:center;border-left:2px solid var(--dark);}
+@media(max-width:768px){.auth-left{display:none;}.auth-right{width:100%;border:none;}}
+.auth-brand{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(60px,10vw,120px);line-height:0.85;text-transform:uppercase;letter-spacing:-0.03em;margin-bottom:24px;}
+.auth-brand .outline{-webkit-text-stroke:3px var(--black);color:transparent;}
+.auth-tagline{font-size:15px;color:rgba(0,0,0,0.5);line-height:1.6;max-width:360px;}
+.auth-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:48px;text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:8px;}
+.auth-sub{font-size:13px;color:var(--grey);margin-bottom:36px;}
+.form-row{margin-bottom:20px;}
+.form-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--grey);display:block;margin-bottom:6px;}
+.form-inp{width:100%;background:transparent;border:none;border-bottom:2px solid var(--mid);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;padding:8px 0;outline:none;transition:border-color 0.2s;}
+.form-inp::placeholder{color:var(--mid);}
+.form-inp:focus{border-color:var(--white);}
+.form-inp.dark{color:var(--black);border-bottom-color:rgba(0,0,0,0.2);}
+.form-inp.dark:focus{border-color:var(--black);}
+.btn-full{width:100%;padding:16px;border:none;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.15s;margin-top:8px;}
+.btn-white{background:var(--white);color:var(--black);}
+.btn-white:hover{background:var(--light);}
+.btn-black{background:var(--black);color:var(--white);}
+.btn-black:hover{background:#111;}
+.auth-switch{margin-top:20px;font-size:13px;color:var(--grey);text-align:center;}
+.auth-switch a{color:var(--white);text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer;}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--mid);}
+.btn-google{width:100%;padding:14px;background:#fff;color:#000;border:2px solid #e0e0e0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.15s;margin-bottom:4px;}
+.btn-google:hover{border-color:#4285F4;box-shadow:0 0 0 3px rgba(66,133,244,0.15);}
+.btn-google:active{transform:scale(0.99);}
+.google-icon{width:20px;height:20px;flex-shrink:0;}
+.google-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+.auth-note{font-size:11px;color:var(--grey);text-align:center;margin-top:8px;line-height:1.5;}
+.auth-error{background:#ff3333;color:#fff;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px;display:none;}
+.auth-error.visible{display:block;}
+
+
+/* ── BABY SETUP SCREEN ── */
+#screen-babysetup{background:var(--black);}
+.setup-container{max-width:700px;margin:0 auto;padding:48px 24px;}
+.setup-header{margin-bottom:40px;}
+.setup-step-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--grey);margin-bottom:8px;}
+.setup-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(48px,8vw,80px);text-transform:uppercase;letter-spacing:-0.02em;line-height:0.9;}
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media(max-width:600px){.setup-grid{grid-template-columns:1fr;}}
+.setup-field{margin-bottom:4px;}
+.setup-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--grey);display:block;margin-bottom:6px;}
+.setup-inp{width:100%;background:transparent;border:none;border-bottom:2px solid var(--mid);color:var(--white);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;padding:6px 0;outline:none;transition:border-color 0.2s;text-transform:uppercase;}
+.setup-inp::placeholder{color:var(--mid);}
+.setup-inp:focus{border-color:var(--white);}
+.setup-inp.normal{font-family:'Barlow',sans-serif;font-size:15px;font-weight:400;text-transform:none;}
+select.setup-inp{font-size:15px;font-family:'Barlow',sans-serif;font-weight:400;text-transform:none;cursor:pointer;}
+select.setup-inp option{background:var(--black);}
+.allergy-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.allergy-chip{padding:7px 14px;border:2px solid var(--mid);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;background:transparent;color:var(--grey);}
+.allergy-chip.active{border-color:var(--white);color:var(--black);background:var(--white);}
+.age-big{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:56px;line-height:1;margin-bottom:8px;}
+.age-big span{color:var(--grey);font-size:22px;margin-left:6px;}
+input[type="range"]{width:100%;-webkit-appearance:none;height:2px;background:var(--mid);outline:none;cursor:pointer;}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--white);cursor:pointer;}
+.setup-actions{display:flex;gap:12px;margin-top:40px;}
+.btn-setup-primary{flex:1;padding:16px;background:var(--white);color:var(--black);border:none;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;}
+.btn-setup-skip{padding:16px 24px;background:transparent;color:var(--grey);border:2px solid var(--mid);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;text-transform:uppercase;cursor:pointer;}
+
+/* ── DASHBOARD ── */
+#screen-dashboard{background:var(--black);}
+.dash-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:2px solid var(--dark);position:sticky;top:0;background:var(--black);z-index:100;}
+.baby-info{display:flex;align-items:center;gap:10px;}
+.baby-avatar{width:38px;height:38px;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.baby-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;text-transform:uppercase;line-height:1;}
+.baby-age-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;color:var(--grey);letter-spacing:0.1em;text-transform:uppercase;}
+.hdr-right{display:flex;align-items:center;gap:12px;}
+.btn-switch-baby{background:transparent;border:1px solid var(--mid);color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:6px 10px;cursor:pointer;}
+.btn-switch-baby:hover{border-color:var(--white);color:var(--white);}
+.btn-logout{background:transparent;border:1px solid var(--mid);color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:6px 10px;cursor:pointer;}
+.btn-logout:hover{border-color:#ff3333;color:#ff3333;}
+.health-score-hdr{text-align:right;}
+.score-num{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:24px;line-height:1;}
+.score-lbl{font-size:10px;color:var(--grey);letter-spacing:0.1em;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.status-dot{width:7px;height:7px;background:#00ff88;border-radius:50%;display:inline-block;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.tab-nav{display:flex;border-bottom:2px solid var(--dark);overflow-x:auto;}
+.tab-btn{flex-shrink:0;padding:13px 16px;background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;}
+.tab-btn.active{color:var(--white);border-bottom-color:var(--white);}
+.tab-content{display:none;flex:1;overflow-y:auto;}
+.tab-content.active{display:block;}
+
+/* ANALYZE */
+.analyze-pad{padding:18px;}
+.sec-head{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--grey);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.sec-head::after{content:'';flex:1;height:1px;background:var(--dark);}
+.upload-zone{border:2px dashed var(--mid);padding:24px 16px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:12px;position:relative;}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--white);background:rgba(255,255,255,0.02);}
+.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{font-size:26px;margin-bottom:6px;}
+.upload-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;text-transform:uppercase;margin-bottom:3px;}
+.upload-sub{font-size:11px;color:var(--grey);}
+.action-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.action-btn{padding:13px 10px;border:2px solid var(--mid);background:transparent;color:var(--white);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.action-btn:hover{border-color:var(--white);}
+.action-btn.recording{border-color:#ff3333;color:#ff3333;animation:pulse-b 1s infinite;}
+@keyframes pulse-b{0%,100%{border-color:#ff3333}50%{border-color:rgba(255,51,51,0.2)}}
+.waveform-box{background:var(--dark);padding:12px;margin-bottom:16px;display:none;}
+.waveform-box.visible{display:block;}
+.wf-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.15em;color:var(--grey);text-transform:uppercase;margin-bottom:4px;}
+canvas#waveform{width:100%;height:64px;display:block;}
+.cam-preview{width:100%;aspect-ratio:4/3;background:var(--dark);margin-bottom:8px;display:none;position:relative;overflow:hidden;}
+.cam-preview.visible{display:block;}
+.cam-preview video{width:100%;height:100%;object-fit:cover;}
+.cam-live-badge{position:absolute;top:8px;left:8px;background:#ff3333;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 7px;}
+.cam-snap-btn{width:100%;padding:13px;background:var(--white);color:var(--black);border:none;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;margin-bottom:16px;display:none;}
+.cam-snap-btn.visible{display:block;}
+.progress-wrap{margin-bottom:16px;display:none;}
+.progress-wrap.visible{display:block;}
+.progress-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.1em;color:var(--grey);text-transform:uppercase;margin-bottom:5px;display:flex;justify-content:space-between;}
+.progress-bar{height:3px;background:var(--dark);}
+.progress-fill{height:100%;background:var(--white);transition:width 0.3s;width:0%;}
+.divider{height:1px;background:var(--dark);margin:16px 0;}
+
+/* RESULTS */
+.results-panel{display:none;padding:18px;border-top:2px solid var(--dark);}
+.results-panel.visible{display:block;}
+.session-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--dark);padding:3px 10px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey);margin-bottom:12px;}
+.gauge-wrap{display:flex;align-items:center;gap:16px;margin-bottom:18px;padding:16px;background:var(--dark);}
+.gauge-condition{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:36px;line-height:0.9;text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:5px;}
+.gauge-conf{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--grey);text-transform:uppercase;letter-spacing:0.08em;}
+.gauge-sec{font-size:11px;color:var(--grey);margin-top:3px;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.prob-list{margin-bottom:18px;}
+.prob-item{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.prob-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;text-transform:uppercase;width:88px;flex-shrink:0;}
+.prob-track{flex:1;height:3px;background:var(--mid);}
+.prob-fill{height:100%;background:var(--white);transition:width 0.6s ease;}
+.prob-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;width:40px;text-align:right;color:var(--grey);}
+.viz-wrap{margin-bottom:18px;}
+.viz-img{width:100%;border:1px solid var(--dark);display:block;}
+.warn-badge{display:inline-flex;align-items:center;gap:6px;background:#ffcc00;color:#000;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;margin-bottom:12px;}
+.img-result-card{background:var(--dark);padding:16px;margin-bottom:12px;}
+.img-condition{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:40px;text-transform:uppercase;letter-spacing:-0.02em;line-height:0.9;margin-bottom:8px;}
+
+/* CHAT */
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 130px);}
+.key-bar{padding:9px 14px;border-bottom:2px solid var(--dark);display:flex;align-items:center;gap:8px;background:#0a0a0a;}
+.key-bar-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey);flex-shrink:0;}
+.key-inp{flex:1;background:transparent;border:none;border-bottom:1px solid var(--mid);color:var(--white);font-family:'Barlow Condensed',sans-serif;font-size:13px;padding:4px 0;outline:none;}
+.key-save-btn{background:var(--white);color:var(--black);border:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:6px 12px;cursor:pointer;flex-shrink:0;}
+.chat-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.chat-bubble{max-width:82%;padding:11px 14px;}
+.chat-bubble.user{align-self:flex-end;background:var(--white);color:var(--black);}
+.chat-bubble.assistant{align-self:flex-start;background:var(--dark);border-left:3px solid var(--white);}
+.bubble-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--grey);margin-bottom:3px;}
+.chat-bubble.user .bubble-name{color:rgba(0,0,0,0.4);}
+.bubble-text{font-size:13px;line-height:1.6;white-space:pre-wrap;}
+.typing-ind{display:none;align-self:flex-start;background:var(--dark);border-left:3px solid var(--white);padding:11px 14px;gap:4px;align-items:center;}
+.typing-ind.visible{display:flex;}
+.typing-dot{width:5px;height:5px;background:var(--grey);border-radius:50%;animation:typ 1.2s infinite;}
+.typing-dot:nth-child(2){animation-delay:0.2s}.typing-dot:nth-child(3){animation-delay:0.4s}
+@keyframes typ{0%,100%{opacity:0.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+.chat-input-row{display:flex;gap:8px;border-top:2px solid var(--dark);padding:11px 14px;align-items:center;}
+.chat-text-input{flex:1;background:transparent;border:none;border-bottom:2px solid var(--mid);color:var(--white);font-family:'Barlow',sans-serif;font-size:13px;padding:7px 0;outline:none;}
+.chat-text-input::placeholder{color:var(--grey);}
+.chat-send-btn,.chat-voice-btn{background:transparent;border:2px solid var(--mid);color:var(--white);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:8px 14px;cursor:pointer;transition:all 0.15s;}
+.chat-send-btn:hover,.chat-voice-btn:hover{border-color:var(--white);}
+.chat-voice-btn.listening{border-color:#ff3333;color:#ff3333;}
+
+/* HISTORY */
+.history-wrap{padding:18px;}
+.history-card{border:1px solid var(--dark);padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color 0.15s;}
+.history-card:hover{border-color:var(--white);}
+.history-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.hist-condition{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;text-transform:uppercase;line-height:1;}
+.hist-time{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:0.08em;}
+.hist-meta{font-size:11px;color:var(--grey);text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.05em;}
+.empty-state{padding:48px 0;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:0.1em;color:var(--grey);}
+
+/* PATTERNS */
+.patterns-wrap{padding:16px;overflow-y:auto;}
+.patterns-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--dark);}
+.patterns-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;text-transform:uppercase;letter-spacing:-0.01em;line-height:1;}
+.patterns-sub{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;}
+.btn-refresh-patterns{background:transparent;border:1px solid var(--mid);color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;padding:8px 14px;cursor:pointer;transition:all 0.15s;}
+.btn-refresh-patterns:hover{border-color:var(--white);color:var(--white);}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:14px;}
+@media(max-width:500px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+.kpi-card{background:var(--dark);padding:14px 12px;}
+.kpi-value{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;line-height:1;margin-bottom:4px;text-transform:uppercase;}
+.kpi-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey);}
+.chart-row-2{display:grid;grid-template-columns:2fr 1fr;gap:2px;margin-bottom:2px;}
+@media(max-width:600px){.chart-row-2{grid-template-columns:1fr;}}
+.chart-box-wide,.chart-box-narrow,.chart-box-full{background:var(--dark);padding:14px;margin-bottom:2px;}
+.chart-box-full{width:100%;}
+.chart-box-header{margin-bottom:10px;}
+.chart-box-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:13px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px;}
+.chart-box-sub{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;color:var(--grey);text-transform:uppercase;letter-spacing:0.08em;}
+/* Heatmap */
+.heatmap-table{width:100%;border-collapse:collapse;}
+.heatmap-row-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;text-transform:uppercase;color:var(--grey);letter-spacing:0.08em;padding-right:8px;white-space:nowrap;width:80px;}
+.heatmap-cell{width:calc((100% - 80px)/24);aspect-ratio:1;border:1px solid #111;transition:all 0.2s;cursor:default;position:relative;}
+.heatmap-cell:hover::after{content:attr(data-tip);position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:#fff;color:#000;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;padding:3px 6px;white-space:nowrap;z-index:10;pointer-events:none;}
+.heatmap-col-labels{display:flex;padding-left:88px;margin-bottom:4px;}
+.heatmap-col-label{flex:1;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:9px;color:var(--grey);text-transform:uppercase;}
+/* Insights */
+.insight-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid #1a1a1a;}
+.insight-item:last-child{border-bottom:none;}
+.insight-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.insight-text{font-size:13px;line-height:1.5;color:var(--light);}
+.insight-text strong{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-transform:uppercase;color:var(--white);display:block;margin-bottom:2px;}
+.insight-badge{display:inline-block;background:var(--white);color:var(--black);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;margin-right:6px;}
+.insight-badge.warn{background:#ffcc00;color:#000;}
+.insight-badge.good{background:#00ff88;color:#000;}
+.insight-badge.info{background:var(--mid);color:var(--white);}
+
+/* BABY SWITCHER MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;display:none;align-items:center;justify-content:center;}
+.modal-overlay.visible{display:flex;}
+.modal-box{background:var(--dark);width:90%;max-width:460px;padding:32px;}
+.modal-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;text-transform:uppercase;margin-bottom:20px;}
+.baby-option{padding:14px;border:1px solid var(--mid);margin-bottom:8px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:12px;}
+.baby-option:hover{border-color:var(--white);}
+.baby-option.selected{border-color:var(--white);background:rgba(255,255,255,0.05);}
+.baby-option-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;text-transform:uppercase;}
+.baby-option-meta{font-size:12px;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;}
+.modal-actions{display:flex;gap:8px;margin-top:20px;}
+.btn-modal{flex:1;padding:14px;border:none;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:15px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--white);color:var(--black);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;z-index:9999;transition:transform 0.3s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:#000;}
+::-webkit-scrollbar-thumb{background:var(--mid);}
+
+/* ── LANDING PAGE ── */
+#screen-landing{background:#000;}
+.landing-hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:60px 40px;position:relative;overflow:hidden;border-bottom:2px solid var(--dark);}
+.landing-hero::before{content:'AMBERISAI';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(80px,18vw,260px);color:rgba(255,255,255,0.03);text-transform:uppercase;white-space:nowrap;pointer-events:none;user-select:none;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.25em;text-transform:uppercase;color:var(--grey);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.hero-eyebrow::before{content:'';width:40px;height:1px;background:var(--grey);}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(80px,14vw,200px);line-height:0.85;text-transform:uppercase;letter-spacing:-0.03em;margin-bottom:40px;}
+.hero-title .outline{-webkit-text-stroke:3px var(--white);color:transparent;}
+.hero-subtitle{font-size:16px;color:var(--grey);line-height:1.6;max-width:480px;margin-bottom:48px;}
+.hero-cta-row{display:flex;gap:16px;flex-wrap:wrap;}
+.btn-hero-primary{background:var(--white);color:var(--black);border:none;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;letter-spacing:0.1em;text-transform:uppercase;padding:18px 40px;cursor:pointer;transition:all 0.15s;}
+.btn-hero-primary:hover{background:var(--light);}
+.btn-hero-secondary{background:transparent;color:var(--white);border:2px solid var(--mid);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:0.1em;text-transform:uppercase;padding:16px 40px;cursor:pointer;transition:all 0.15s;}
+.btn-hero-secondary:hover{border-color:var(--white);}
+.hero-stats{display:flex;gap:48px;margin-top:64px;padding-top:40px;border-top:1px solid var(--dark);flex-wrap:wrap;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:48px;line-height:1;margin-bottom:4px;}
+.stat-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--grey);}
+.marquee-strip{background:var(--white);color:var(--black);padding:14px 0;overflow:hidden;white-space:nowrap;}
+.marquee-inner{display:inline-block;animation:marquee 18s linear infinite;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;letter-spacing:0.1em;text-transform:uppercase;}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.l-section{padding:80px 40px;border-bottom:1px solid var(--dark);}
+.l-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--grey);margin-bottom:16px;}
+.l-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(48px,7vw,96px);line-height:0.9;text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:48px;}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2px;}
+.feature-card{background:var(--dark);padding:32px;transition:background 0.2s;}
+.feature-card:hover{background:var(--mid);}
+.feature-icon{font-size:32px;margin-bottom:20px;}
+.feature-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:24px;text-transform:uppercase;margin-bottom:12px;}
+.feature-desc{font-size:13px;color:var(--grey);line-height:1.6;}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2px;}
+.step-card{padding:32px;border:1px solid var(--dark);position:relative;}
+.step-num{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:80px;line-height:1;color:rgba(255,255,255,0.06);position:absolute;top:16px;right:20px;}
+.step-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;text-transform:uppercase;margin-bottom:10px;position:relative;z-index:1;}
+.step-desc{font-size:13px;color:var(--grey);line-height:1.6;position:relative;z-index:1;}
+.conditions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:2px;}
+.condition-pill{background:var(--dark);padding:24px 20px;text-align:center;transition:all 0.15s;}
+.condition-pill:hover{background:var(--white);color:var(--black);}
+.condition-icon{font-size:28px;margin-bottom:10px;}
+.condition-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;text-transform:uppercase;display:block;margin-bottom:4px;}
+.condition-pct{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:0.1em;}
+.condition-pill:hover .condition-pct{color:var(--mid);}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+@media(max-width:640px){.about-grid{grid-template-columns:1fr;}}
+.about-left{background:var(--white);color:var(--black);padding:48px 40px;}
+.big-quote{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(32px,5vw,64px);line-height:0.9;text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:24px;}
+.quote-attr{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(0,0,0,0.5);}
+.about-right{background:var(--dark);padding:48px 40px;}
+.about-right p{font-size:14px;line-height:1.7;color:var(--grey);margin-bottom:20px;}
+.about-right p strong{color:var(--white);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;text-transform:uppercase;}
+.tech-row{display:flex;flex-wrap:wrap;gap:2px;}
+.tech-badge{background:var(--dark);padding:14px 20px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:0.08em;color:var(--grey);transition:all 0.15s;}
+.tech-badge:hover{background:var(--white);color:var(--black);}
+.landing-footer{background:var(--dark);padding:48px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;}
+.footer-brand{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:36px;text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:12px;}
+.footer-tagline{font-size:13px;color:var(--grey);line-height:1.5;}
+.footer-col-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:var(--grey);margin-bottom:16px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{color:var(--white);text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;text-transform:uppercase;transition:color 0.15s;}
+.footer-links a:hover{color:var(--grey);}
+.footer-bottom{background:var(--black);border-top:1px solid var(--dark);padding:20px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.footer-copy{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--grey);letter-spacing:0.1em;text-transform:uppercase;}
+@media(max-width:640px){.l-section{padding:48px 20px;}.landing-hero{padding:40px 20px;}.hero-stats{gap:24px;}.landing-footer{padding:40px 20px;}.footer-bottom{padding:16px 20px;}}
+</style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     SCREEN: LANDING
+══════════════════════════════ -->
+<div id="screen-landing" class="screen active">
+
+  <!-- Hero -->
+  <section class="landing-hero">
+    <div class="hero-eyebrow">Infant Care Intelligence — Powered by AI</div>
+    <h1 class="hero-title">Amberis<span class="outline">AI</span></h1>
+    <p class="hero-subtitle">Decode every cry. Detect every symptom. Give every parent the confidence they deserve. Real-time AI analysis built for the most important job in the world.</p>
+    <div class="hero-cta-row">
+      <button class="btn-hero-primary" id="btn-hero-start">GET STARTED →</button>
+      <button class="btn-hero-secondary" id="btn-hero-login">SIGN IN</button>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">92%</div><div class="stat-lbl">Detection Accuracy</div></div>
+      <div><div class="stat-num">5</div><div class="stat-lbl">Cry Conditions</div></div>
+      <div><div class="stat-num">&lt;3s</div><div class="stat-lbl">Analysis Time</div></div>
+      <div><div class="stat-num">24/7</div><div class="stat-lbl">Always On</div></div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee-strip">
+    <div class="marquee-inner">HUNGER DETECTION &nbsp;·&nbsp; DISCOMFORT ANALYSIS &nbsp;·&nbsp; BELLY PAIN RECOGNITION &nbsp;·&nbsp; TIREDNESS DETECTION &nbsp;·&nbsp; BURPING SIGNALS &nbsp;·&nbsp; RASH DETECTION &nbsp;·&nbsp; JAUNDICE SCREENING &nbsp;·&nbsp; REAL-TIME WAVEFORM &nbsp;·&nbsp; HUNGER DETECTION &nbsp;·&nbsp; DISCOMFORT ANALYSIS &nbsp;·&nbsp; BELLY PAIN RECOGNITION &nbsp;·&nbsp; TIREDNESS DETECTION &nbsp;·&nbsp; BURPING SIGNALS &nbsp;·&nbsp; RASH DETECTION &nbsp;·&nbsp; JAUNDICE SCREENING &nbsp;·&nbsp; REAL-TIME WAVEFORM &nbsp;·&nbsp;</div>
+  </div>
+
+  <!-- What We Offer -->
+  <section class="l-section" id="features">
+    <div class="l-eyebrow">What We Offer</div>
+    <div class="l-title">Every Tool<br/>Parents Need</div>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">🎤</div><div class="feature-title">Cry Analysis</div><div class="feature-desc">Upload or record your baby's cry. Our ensemble AI model (Random Forest + XGBoost) classifies hunger, discomfort, belly pain, tiredness, and burping with 92% accuracy in under 3 seconds.</div></div>
+      <div class="feature-card"><div class="feature-icon">📷</div><div class="feature-title">Skin Detection</div><div class="feature-desc">Snap or upload a photo of your baby's skin. Our Keras deep learning model detects rashes, jaundice, and normal skin — giving you instant visual confidence scores.</div></div>
+      <div class="feature-card"><div class="feature-icon">📊</div><div class="feature-title">Rich Analytics</div><div class="feature-desc">Every analysis generates detailed probability breakdowns, confidence gauges, waveform visualizations, and session timelines — so you always know exactly what's happening.</div></div>
+      <div class="feature-card"><div class="feature-icon">💬</div><div class="feature-title">Nurse Amber Chat</div><div class="feature-desc">Ask Nurse Amber anything. Get personalized, context-aware guidance based on your baby's latest analysis. Supports voice input for hands-free help.</div></div>
+      <div class="feature-card"><div class="feature-icon">📈</div><div class="feature-title">Trend Tracking</div><div class="feature-desc">Weekly cry pattern charts, condition breakdowns, and session timelines help you spot trends — so you can proactively care for your baby before issues escalate.</div></div>
+      <div class="feature-card"><div class="feature-icon">🔐</div><div class="feature-title">Secure Profiles</div><div class="feature-desc">Full parent authentication with secure baby profiles. Store DOB, weight, blood group, allergies, and medical notes. All past analyses saved and accessible on every login.</div></div>
+    </div>
+  </section>
+
+  <!-- Conditions -->
+  <section class="l-section">
+    <div class="l-eyebrow">Cry Conditions Detected</div>
+    <div class="l-title">5 Conditions.<br/>1 Analysis.</div>
+    <div class="conditions-grid">
+      <div class="condition-pill"><div class="condition-icon">🍼</div><span class="condition-name">Hunger</span><span class="condition-pct">Most Common</span></div>
+      <div class="condition-pill"><div class="condition-icon">😣</div><span class="condition-name">Discomfort</span><span class="condition-pct">2nd Most Common</span></div>
+      <div class="condition-pill"><div class="condition-icon">🤕</div><span class="condition-name">Belly Pain</span><span class="condition-pct">High Intensity</span></div>
+      <div class="condition-pill"><div class="condition-icon">😴</div><span class="condition-name">Tired</span><span class="condition-pct">Low Energy</span></div>
+      <div class="condition-pill"><div class="condition-icon">💨</div><span class="condition-name">Burping</span><span class="condition-pct">Post-Feed</span></div>
+      <div class="condition-pill"><div class="condition-icon">🔴</div><span class="condition-name">Rash</span><span class="condition-pct">Skin Analysis</span></div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="l-section">
+    <div class="l-eyebrow">How It Works</div>
+    <div class="l-title">Simple.<br/>Powerful.</div>
+    <div class="steps-grid">
+      <div class="step-card"><div class="step-num">01</div><div class="step-title">Create Account</div><div class="step-desc">Register as a parent with your email and password. Your account securely stores all your baby data and session history.</div></div>
+      <div class="step-card"><div class="step-num">02</div><div class="step-title">Add Baby Profile</div><div class="step-desc">Enter your baby's name, DOB, weight, blood group, allergies, and medical notes. Add multiple babies to one account.</div></div>
+      <div class="step-card"><div class="step-num">03</div><div class="step-title">Record or Upload</div><div class="step-desc">Use the live mic to record a cry in real-time, or upload a .wav/.mp3. For skin analysis, snap a photo or upload an image.</div></div>
+      <div class="step-card"><div class="step-num">04</div><div class="step-title">AI Analyzes</div><div class="step-desc">Our ensemble model extracts 154-dimensional audio features and runs them through Random Forest and XGBoost classifiers.</div></div>
+      <div class="step-card"><div class="step-num">05</div><div class="step-title">Ask Nurse Amber</div><div class="step-desc">Chat with Nurse Amber for detailed, context-aware care guidance based on your baby's specific analysis and full history.</div></div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="l-section" id="about">
+    <div class="l-eyebrow">About Us</div>
+    <div class="l-title">Our Mission</div>
+    <div class="about-grid">
+      <div class="about-left">
+        <div class="big-quote">"Every cry is a message. We built the translator."</div>
+        <div class="quote-attr">— Team AmberisAI</div>
+      </div>
+      <div class="about-right">
+        <p><strong>What We Built</strong><br/>AmberisAI is an AI-powered infant care platform combining audio cry classification with skin symptom detection to give parents real-time, empathetic guidance.</p>
+        <p><strong>The Problem</strong><br/>New parents face immense anxiety when their baby cries and they don't know why. Medical consultations aren't always available. Guesswork leads to stress. We built AmberisAI to change that.</p>
+        <p><strong>The Technology</strong><br/>We use an ensemble of Random Forest and XGBoost models trained on infant cry datasets, extracting 154-dimensional MFCC and spectral features. For skin detection, we use a MobileNet-based Keras model trained via Google Teachable Machine.</p>
+        <p><strong>Built For</strong><br/>Parents. Caregivers. NICU nurses. Anyone who cares for an infant and wants intelligent, instant, reliable guidance at 3am.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack -->
+  <section class="l-section">
+    <div class="l-eyebrow">Technology</div>
+    <div class="l-title">Built With<br/>The Best.</div>
+    <div class="tech-row">
+      <div class="tech-badge">Python</div><div class="tech-badge">Flask</div><div class="tech-badge">Random Forest</div><div class="tech-badge">XGBoost</div><div class="tech-badge">Keras / TF</div><div class="tech-badge">Librosa</div><div class="tech-badge">MFCC Features</div><div class="tech-badge">MobileNet</div><div class="tech-badge">SQLite</div><div class="tech-badge">Groq API</div><div class="tech-badge">Llama 3.3 70B</div><div class="tech-badge">Web Audio API</div><div class="tech-badge">MediaRecorder</div><div class="tech-badge">Chart.js</div><div class="tech-badge">PWA</div><div class="tech-badge">Web Speech API</div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="landing-footer">
+      <div><div class="footer-brand">AmberisAI</div><div class="footer-tagline">Decode every cry.<br/>Detect every symptom.<br/>Empower every parent.</div></div>
+      <div><div class="footer-col-title">Features</div><div class="footer-links"><a href="#">Cry Analysis</a><a href="#">Skin Detection</a><a href="#">Nurse Amber</a><a href="#">Trend Tracking</a></div></div>
+      <div><div class="footer-col-title">Technology</div><div class="footer-links"><a href="#">Random Forest</a><a href="#">XGBoost</a><a href="#">MobileNet CNN</a><a href="#">MFCC Features</a></div></div>
+      <div><div class="footer-col-title">Account</div><div class="footer-links"><a id="footer-register" href="#" style="cursor:pointer;">Register</a><a id="footer-login" href="#" style="cursor:pointer;">Sign In</a><a href="#">About</a></div></div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 AmberisAI — Infant Care Intelligence</div>
+      <div class="footer-copy">Built for Kal Ki Hackathon 🏆</div>
+    </div>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════
+     SCREEN: LOGIN
+══════════════════════════════ -->
+<div id="screen-login" class="screen">
+  <div class="auth-wrap">
+    <div class="auth-left">
+      <div class="auth-brand">Amberis<span class="outline">AI</span></div>
+      <div class="auth-tagline">Decode every cry. Detect every symptom. Empower every parent. AI-powered infant care intelligence available 24/7.</div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-title">Welcome Back</div>
+      <div class="auth-sub">Sign in to your parent account</div>
+      <div style="margin-bottom:20px;">
+        <button onclick="showScreen('screen-landing')" style="background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;padding:0;display:flex;align-items:center;gap:6px;">← BACK TO HOME</button>
+      </div>
+      <div class="auth-error" id="login-error">Invalid email or password</div>
+      <div class="form-row">
+        <label class="form-lbl">Email Address</label>
+        <input class="form-inp" type="email" id="login-email" placeholder="parent@email.com"/>
+      </div>
+      <div class="form-row">
+        <label class="form-lbl">Password</label>
+        <input class="form-inp" type="password" id="login-password" placeholder="••••••••"/>
+      </div>
+      <button class="btn-full btn-white" id="btn-login">SIGN IN →</button>
+
+      <div class="auth-divider">or</div>
+
+      <button class="btn-google" id="btn-google-login">
+        <svg class="google-icon" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        CONTINUE WITH GOOGLE
+      </button>
+      <div class="auth-note">Free · No credit card · Instant setup</div>
+
+      <div class="auth-switch">Don't have an account? <a id="goto-register">Create one →</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SCREEN: REGISTER
+══════════════════════════════ -->
+<div id="screen-register" class="screen">
+  <div class="auth-wrap">
+    <div class="auth-left">
+      <div class="auth-brand">Amberis<span class="outline">AI</span></div>
+      <div class="auth-tagline">Join thousands of parents using AI to better understand and care for their babies.</div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-title">Create Account</div>
+      <div class="auth-sub">Start your infant care journey</div>
+      <div style="margin-bottom:20px;">
+        <button onclick="showScreen('screen-landing')" style="background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;padding:0;display:flex;align-items:center;gap:6px;">← BACK TO HOME</button>
+      </div>
+      <div class="auth-error" id="register-error"></div>
+      <div class="form-row">
+        <label class="form-lbl">Full Name</label>
+        <input class="form-inp" type="text" id="reg-name" placeholder="Your full name"/>
+      </div>
+      <div class="form-row">
+        <label class="form-lbl">Email Address</label>
+        <input class="form-inp" type="email" id="reg-email" placeholder="parent@email.com"/>
+      </div>
+      <div class="form-row">
+        <label class="form-lbl">Phone (optional)</label>
+        <input class="form-inp" type="tel" id="reg-phone" placeholder="+91 9999999999"/>
+      </div>
+      <div class="form-row">
+        <label class="form-lbl">Password (min 6 chars)</label>
+        <input class="form-inp" type="password" id="reg-password" placeholder="••••••••"/>
+      </div>
+      <button class="btn-full btn-white" id="btn-register">CREATE ACCOUNT →</button>
+
+      <div class="auth-divider">or</div>
+
+      <button class="btn-google" id="btn-google-register">
+        <svg class="google-icon" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        SIGN UP WITH GOOGLE
+      </button>
+      <div class="auth-note">No password needed · Uses your Google account</div>
+
+      <div class="auth-switch">Already have an account? <a id="goto-login">Sign in →</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SCREEN: BABY SETUP
+══════════════════════════════ -->
+<div id="screen-babysetup" class="screen">
+  <div class="setup-container">
+    <div class="setup-header">
+      <button onclick="showScreen('screen-landing')" style="background:transparent;border:none;color:var(--grey);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px;">← BACK TO HOME</button>
+      <div class="setup-step-lbl">Step 2 of 2 — Baby Profile</div>
+      <div class="setup-title">Tell Us About<br/>Your Baby</div>
+    </div>
+
+    <div class="setup-grid">
+      <div class="setup-field">
+        <label class="setup-lbl">Baby's Name / Nickname *</label>
+        <input class="setup-inp" type="text" id="baby-name" placeholder="LADLA" maxlength="20"/>
+      </div>
+      <div class="setup-field">
+        <label class="setup-lbl">Date of Birth</label>
+        <input class="setup-inp normal" type="date" id="baby-dob"/>
+      </div>
+      <div class="setup-field">
+        <label class="setup-lbl">Age (Days): <span id="baby-age-display">45</span></label>
+        <div class="age-big" id="baby-age-big">45 <span>days</span></div>
+        <input type="range" id="baby-age-range" min="0" max="730" value="45"/>
+      </div>
+      <div class="setup-field">
+        <label class="setup-lbl">Gender</label>
+        <select class="setup-inp" id="baby-gender">
+          <option value="">Select gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="setup-field">
+        <label class="setup-lbl">Weight (kg)</label>
+        <input class="setup-inp normal" type="number" id="baby-weight" placeholder="3.5" step="0.1" min="0" max="30"/>
+      </div>
+      <div class="setup-field">
+        <label class="setup-lbl">Blood Group</label>
+        <select class="setup-inp" id="baby-blood">
+          <option value="">Select blood group</option>
+          <option>A+</option><option>A-</option>
+          <option>B+</option><option>B-</option>
+          <option>O+</option><option>O-</option>
+          <option>AB+</option><option>AB-</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;">
+      <label class="setup-lbl">Known Allergies</label>
+      <div class="allergy-grid">
+        <button class="allergy-chip" data-allergy="milk">Milk</button>
+        <button class="allergy-chip" data-allergy="nuts">Nuts</button>
+        <button class="allergy-chip" data-allergy="soy">Soy</button>
+        <button class="allergy-chip" data-allergy="gluten">Gluten</button>
+        <button class="allergy-chip" data-allergy="eggs">Eggs</button>
+        <button class="allergy-chip" data-allergy="latex">Latex</button>
+        <button class="allergy-chip" data-allergy="none">None</button>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;">
+      <label class="setup-lbl">Medical Notes (optional)</label>
+      <input class="setup-inp normal" type="text" id="baby-notes" placeholder="Any conditions, medications, or notes..."/>
+    </div>
+
+    <div class="setup-actions">
+      <button class="btn-setup-primary" id="btn-save-baby">SAVE &amp; START ANALYSIS →</button>
+      <button class="btn-setup-skip" id="btn-skip-baby">SKIP</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SCREEN: DASHBOARD
+══════════════════════════════ -->
+<div id="screen-dashboard" class="screen">
+  <header class="dash-header">
+    <div class="baby-info">
+      <div class="baby-avatar">🍼</div>
+      <div>
+        <div class="baby-name" id="dash-baby-name">BABY</div>
+        <div class="baby-age-lbl" id="dash-baby-age">— DAYS</div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <button class="btn-switch-baby" id="btn-home" onclick="showScreen('screen-landing')" style="margin-right:4px;">🏠 HOME</button>
+      <button class="btn-switch-baby" id="btn-switch-baby">⇄ SWITCH</button>
+      <div class="health-score-hdr">
+        <div class="score-num" id="health-score">—<span style="font-size:12px;color:var(--grey)">/100</span></div>
+        <div class="score-lbl"><span class="status-dot"></span> HEALTH</div>
+      </div>
+      <button class="btn-logout" id="btn-logout">LOGOUT</button>
+    </div>
+  </header>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="analyze">ANALYZE</button>
+    <button class="tab-btn" data-tab="chat">CHAT</button>
+    <button class="tab-btn" data-tab="history">HISTORY</button>
+    <button class="tab-btn" data-tab="trends">PATTERNS</button>
+    <button class="tab-btn" data-tab="profile">PROFILE</button>
+  </nav>
+
+  <!-- ANALYZE TAB -->
+  <div id="tab-analyze" class="tab-content active">
+    <div class="analyze-pad">
+      <div class="sec-head">Cry Analysis</div>
+      <div class="upload-zone" id="audio-drop-zone">
+        <input type="file" id="audio-file-input" accept=".wav,.mp3"/>
+        <div class="upload-icon">🎤</div>
+        <div class="upload-title">Drop Audio File</div>
+        <div class="upload-sub">.WAV or .MP3</div>
+      </div>
+      <div class="action-row">
+        <button class="action-btn" id="btn-mic">⏺ LIVE MIC</button>
+        <button class="action-btn" id="btn-upload-audio">📁 UPLOAD</button>
+      </div>
+      <div class="waveform-box" id="waveform-container">
+        <div class="wf-label">Live Waveform</div>
+        <canvas id="waveform" width="600" height="64"></canvas>
+      </div>
+      <div class="progress-wrap" id="audio-progress">
+        <div class="progress-lbl"><span>Analyzing cry...</span><span id="audio-pct">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="audio-fill"></div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="sec-head">Skin Analysis</div>
+      <div class="upload-zone" id="image-drop-zone">
+        <input type="file" id="image-file-input" accept=".jpg,.jpeg,.png"/>
+        <div class="upload-icon">📷</div>
+        <div class="upload-title">Drop Skin Image</div>
+        <div class="upload-sub">.JPG or .PNG</div>
+      </div>
+      <div class="action-row">
+        <button class="action-btn" id="btn-cam">📹 LIVE CAM</button>
+        <button class="action-btn" id="btn-upload-img">📁 UPLOAD</button>
+      </div>
+      <div class="cam-preview" id="cam-preview">
+        <video id="cam-video" autoplay playsinline muted></video>
+        <div class="cam-live-badge">● LIVE</div>
+      </div>
+      <button class="cam-snap-btn" id="btn-snap">📸 CAPTURE &amp; ANALYZE</button>
+      <div class="progress-wrap" id="image-progress">
+        <div class="progress-lbl"><span>Analyzing image...</span><span id="image-pct">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="image-fill"></div></div>
+      </div>
+    </div>
+    <div class="results-panel" id="results-panel">
+      <div id="audio-results" style="display:none;">
+        <div class="sec-head">Cry Analysis Result</div>
+        <div class="session-pill" id="audio-session-id"><span class="status-dot"></span> SESSION —</div>
+        <div class="gauge-wrap">
+          <svg width="86" height="86" viewBox="0 0 86 86" style="flex-shrink:0">
+            <circle cx="43" cy="43" r="34" fill="none" stroke="#2e2e2e" stroke-width="7"/>
+            <circle cx="43" cy="43" r="34" fill="none" stroke="white" stroke-width="7"
+              stroke-dasharray="214" stroke-dashoffset="214" stroke-linecap="square"
+              transform="rotate(-90 43 43)" id="gauge-circle" style="transition:stroke-dashoffset 1s ease;"/>
+            <text x="43" y="47" text-anchor="middle" fill="white"
+              font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="16" id="gauge-pct">0%</text>
+          </svg>
+          <div>
+            <div class="gauge-condition" id="result-condition">—</div>
+            <div class="gauge-conf" id="result-confidence">CONFIDENCE: —</div>
+            <div class="gauge-sec" id="result-secondary"></div>
+          </div>
+        </div>
+        <div class="warn-badge" id="low-conf-warning" style="display:none;">⚠ LOW CONFIDENCE</div>
+        <div class="sec-head">All Probabilities</div>
+        <div class="prob-list" id="prob-list"></div>
+        <div class="viz-wrap" id="viz-wrap" style="display:none;">
+          <div class="sec-head">Audio Visualization</div>
+          <img class="viz-img" id="viz-img" src="" alt="visualization"/>
+        </div>
+      </div>
+      <div id="image-results" style="display:none;">
+        <div class="sec-head">Skin Analysis Result</div>
+        <div class="session-pill" id="image-session-id"><span class="status-dot"></span> SESSION —</div>
+        <div class="img-result-card">
+          <div class="img-condition" id="image-condition">—</div>
+          <div class="gauge-conf" id="image-confidence">CONFIDENCE: —</div>
+        </div>
+        <div class="sec-head">All Probabilities</div>
+        <div class="prob-list" id="image-prob-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT TAB -->
+  <div id="tab-chat" class="tab-content">
+    <div class="chat-wrap">
+      <div class="key-bar">
+        <span class="key-bar-lbl">GROQ KEY:</span>
+        <input type="password" class="key-inp" id="deepseek-key-input" placeholder="gsk_xxxxxxxxxxxxxx"/>
+        <button class="key-save-btn" id="btn-save-key">SAVE</button>
+        <span id="key-status">🔴</span>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-bubble assistant">
+          <div class="bubble-name">Nurse Amber</div>
+          <div class="bubble-text">Hello! I'm Nurse Amber 👶 Paste your Groq API key above and click SAVE. Get a FREE key at console.groq.com — then ask me anything about your baby!</div>
+        </div>
+      </div>
+      <div class="typing-ind" id="typing-indicator">
+        <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+      </div>
+      <div class="chat-input-row">
+        <button class="chat-voice-btn" id="btn-voice">🎙</button>
+        <input class="chat-text-input" type="text" id="chat-input" placeholder="Ask Nurse Amber..."/>
+        <button class="chat-send-btn" id="btn-send">SEND</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY TAB -->
+  <div id="tab-history" class="tab-content">
+    <div class="history-wrap" id="history-list">
+      <div class="empty-state">No sessions yet.<br/>Run an analysis to get started.</div>
+    </div>
+  </div>
+
+  <!-- PATTERNS TAB -->
+  <div id="tab-trends" class="tab-content">
+    <div class="patterns-wrap">
+
+      <!-- Header row with baby name + last updated -->
+      <div class="patterns-header">
+        <div>
+          <div class="patterns-title" id="patterns-baby-name">BABY PATTERNS</div>
+          <div class="patterns-sub" id="patterns-last-updated">Analysing session data...</div>
+        </div>
+        <button class="btn-refresh-patterns" id="btn-refresh-patterns">↻ REFRESH</button>
+      </div>
+
+      <!-- KPI STAT CARDS -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-total-sessions">—</div>
+          <div class="kpi-label">Total Sessions</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-top-condition">—</div>
+          <div class="kpi-label">Most Common Cry</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-peak-hour">—</div>
+          <div class="kpi-label">Peak Cry Hour</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-avg-confidence">—</div>
+          <div class="kpi-label">Avg Confidence</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-cry-free-days">—</div>
+          <div class="kpi-label">Days Tracked</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-trend-arrow">—</div>
+          <div class="kpi-label">This Week vs Last</div>
+        </div>
+      </div>
+
+      <!-- ROW 1: Condition frequency over weeks + Donut -->
+      <div class="chart-row-2">
+        <div class="chart-box-wide">
+          <div class="chart-box-header">
+            <div class="chart-box-title">CONDITION FREQUENCY OVER TIME</div>
+            <div class="chart-box-sub">How often each cry type appears per week</div>
+          </div>
+          <canvas id="chart-freq-over-time" height="160"></canvas>
+        </div>
+        <div class="chart-box-narrow">
+          <div class="chart-box-header">
+            <div class="chart-box-title">CONDITION SPLIT</div>
+            <div class="chart-box-sub">All time breakdown</div>
+          </div>
+          <canvas id="chart-donut" height="180"></canvas>
+        </div>
+      </div>
+
+      <!-- ROW 2: Time of day heatmap -->
+      <div class="chart-box-full">
+        <div class="chart-box-header">
+          <div class="chart-box-title">CRY TIME-OF-DAY HEATMAP</div>
+          <div class="chart-box-sub">When does this baby cry most? (rows = conditions, cols = hours)</div>
+        </div>
+        <div id="heatmap-container"></div>
+      </div>
+
+      <!-- ROW 3: Hourly cry distribution + Weekly pattern -->
+      <div class="chart-row-2">
+        <div class="chart-box-wide">
+          <div class="chart-box-header">
+            <div class="chart-box-title">HOURLY CRY DISTRIBUTION</div>
+            <div class="chart-box-sub">Total cry events by hour of day</div>
+          </div>
+          <canvas id="chart-timeline" height="140"></canvas>
+        </div>
+        <div class="chart-box-narrow">
+          <div class="chart-box-header">
+            <div class="chart-box-title">DAY OF WEEK</div>
+            <div class="chart-box-sub">Which days are hardest</div>
+          </div>
+          <canvas id="chart-dow" height="140"></canvas>
+        </div>
+      </div>
+
+      <!-- ROW 4: Confidence trend over time -->
+      <div class="chart-box-full">
+        <div class="chart-box-header">
+          <div class="chart-box-title">DETECTION CONFIDENCE OVER TIME</div>
+          <div class="chart-box-sub">Higher = clearer cry signals (baby's patterns maturing)</div>
+        </div>
+        <canvas id="chart-confidence-trend" height="120"></canvas>
+      </div>
+
+      <!-- ROW 5: Weekly cry count trend + Session gap -->
+      <div class="chart-row-2">
+        <div class="chart-box-wide">
+          <div class="chart-box-header">
+            <div class="chart-box-title">WEEKLY CRY COUNT TREND</div>
+            <div class="chart-box-sub">Total sessions per week — improving or worsening?</div>
+          </div>
+          <canvas id="chart-trends" height="140"></canvas>
+        </div>
+        <div class="chart-box-narrow">
+          <div class="chart-box-header">
+            <div class="chart-box-title">SESSION GAPS</div>
+            <div class="chart-box-sub">Hours between cry episodes</div>
+          </div>
+          <canvas id="chart-gaps" height="140"></canvas>
+        </div>
+      </div>
+
+      <!-- ROW 6: Skin vs Cry correlation -->
+      <div class="chart-box-full">
+        <div class="chart-box-header">
+          <div class="chart-box-title">SKIN vs CRY CORRELATION</div>
+          <div class="chart-box-sub">Do skin issues coincide with increased crying?</div>
+        </div>
+        <canvas id="chart-skin-cry" height="120"></canvas>
+      </div>
+
+      <!-- ROW 7: Pattern Insights (AI text) -->
+      <div class="chart-box-full" id="pattern-insights-box">
+        <div class="chart-box-header">
+          <div class="chart-box-title">🔍 PATTERN INSIGHTS</div>
+          <div class="chart-box-sub">Auto-detected patterns from session history</div>
+        </div>
+        <div id="pattern-insights-list"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div id="tab-profile" class="tab-content">
+    <div style="padding:18px;">
+      <div class="sec-head">Baby Profile</div>
+      <div id="profile-view" style="background:var(--dark);padding:20px;margin-bottom:16px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:36px;text-transform:uppercase;margin-bottom:16px;" id="pv-name">—</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" id="pv-grid"></div>
+      </div>
+      <div class="sec-head">Parent Account</div>
+      <div style="background:var(--dark);padding:20px;" id="parent-view"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Baby Switcher Modal -->
+<div class="modal-overlay" id="modal-switcher">
+  <div class="modal-box">
+    <div class="modal-title">Select Baby</div>
+    <div id="modal-baby-list"></div>
+    <div class="modal-actions">
+      <button class="btn-modal" style="background:var(--white);color:var(--black);" id="btn-add-baby">+ ADD NEW BABY</button>
+      <button class="btn-modal" style="background:transparent;border:2px solid var(--mid);color:var(--white);" id="btn-close-modal">CLOSE</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+const API_BASE = 'http://localhost:5000';
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+const state = {
+  userId: null, fullName: '', email: '',
+  babies: [],
+  currentBaby: null,
+  sessions: [],
+  audioAnalysis: null, imageAnalysis: null,
+  isRecording: false, isCamOn: false,
+  mediaStream: null, mediaRecorder: null, audioChunks: [],
+  charts: {}, conditionCounts: {}
+};
+
+// ── UTILS ────────────────────────────────────────────────────────────────────
+function showToast(msg,d=2800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function showTab(tab){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.querySelector(`[data-tab="${tab}"]`).classList.add('active');document.getElementById(`tab-${tab}`).classList.add('active');}
+function formatTime(iso){return new Date(iso).toLocaleString();}
+function animateProgress(fId,pId){let p=0;const f=document.getElementById(fId),pe=document.getElementById(pId);const iv=setInterval(()=>{p=Math.min(p+Math.random()*12,90);f.style.width=p+'%';pe.textContent=Math.round(p)+'%';if(p>=90)clearInterval(iv);},120);return iv;}
+function completeProgress(fId,pId){document.getElementById(fId).style.width='100%';document.getElementById(pId).textContent='100%';}
+
+// ── PERSIST STATE ─────────────────────────────────────────────────────────────
+function saveToStorage(){localStorage.setItem('amberisai_user',JSON.stringify({userId:state.userId,fullName:state.fullName,email:state.email}));if(state.currentBaby)localStorage.setItem('amberisai_baby',JSON.stringify(state.currentBaby));}
+function loadFromStorage(){
+  try{
+    const u=JSON.parse(localStorage.getItem('amberisai_user'));
+    const b=JSON.parse(localStorage.getItem('amberisai_baby'));
+    if(u&&u.userId){state.userId=u.userId;state.fullName=u.fullName;state.email=u.email;}
+    if(b){state.currentBaby=b;}
+    return !!(u&&u.userId);
+  }catch(e){return false;}
+}
+
+// ── GOOGLE OAUTH ──────────────────────────────────────────────────────────────
+// Replace with your Client ID from console.cloud.google.com
+const GOOGLE_CLIENT_ID = '855340911102-mbcl7k3jbf1h8p9vk4iqm53dodokqac2.apps.googleusercontent.com';
+
+function initGoogleAuth(){
+  if(typeof google === 'undefined' || !google.accounts) return;
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleGoogleCredential,
+    auto_select: false,
+    cancel_on_tap_outside: true
+  });
+}
+
+async function handleGoogleCredential(response){
+  const idToken = response.credential;
+  showToast('VERIFYING GOOGLE ACCOUNT...');
+  try{
+    const res = await fetch(`${API_BASE}/auth/google`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({id_token: idToken})
+    });
+    const data = await res.json();
+    if(!data.success){ showToast('GOOGLE SIGN-IN FAILED: '+(data.error||'Unknown error')); return; }
+    state.userId   = data.user_id;
+    state.fullName = data.full_name;
+    state.email    = data.email;
+    state.picture  = data.picture||'';
+    state.babies   = data.babies||[];
+    saveToStorage();
+    showToast(`WELCOME, ${data.full_name.toUpperCase().split(' ')[0]}! 👋`);
+    if(data.is_new_user || state.babies.length===0){
+      showScreen('screen-babysetup');
+    } else {
+      state.currentBaby=state.babies[0];
+      saveToStorage();
+      enterDashboard();
+    }
+  }catch(e){ showToast('CONNECTION ERROR — IS FLASK RUNNING?'); console.error('[Google Auth]',e); }
+}
+
+function triggerGoogleSignIn(){
+  if(typeof google==='undefined'||!google.accounts){
+    showToast('GOOGLE SDK LOADING... PLEASE WAIT');
+    setTimeout(()=>{initGoogleAuth();triggerGoogleSignIn();},1200);
+    return;
+  }
+  google.accounts.id.prompt((notification)=>{
+    if(notification.isNotDisplayed()||notification.isSkippedMoment()){
+      showToast('ALLOW POPUPS IN BROWSER FOR GOOGLE SIGN-IN');
+    }
+  });
+}
+
+document.getElementById('btn-google-login').addEventListener('click',triggerGoogleSignIn);
+document.getElementById('btn-google-register').addEventListener('click',triggerGoogleSignIn);
+
+// ── LANDING PAGE ─────────────────────────────────────────────────────────────
+document.getElementById('btn-hero-start').addEventListener('click',()=>showScreen('screen-register'));
+document.getElementById('btn-hero-login').addEventListener('click',()=>showScreen('screen-login'));
+document.getElementById('footer-register').addEventListener('click',e=>{e.preventDefault();showScreen('screen-register');});
+document.getElementById('footer-login').addEventListener('click',e=>{e.preventDefault();showScreen('screen-login');});
+
+
+document.getElementById('goto-register').addEventListener('click',()=>showScreen('screen-register'));
+document.getElementById('goto-login').addEventListener('click',()=>showScreen('screen-login'));
+
+document.getElementById('btn-login').addEventListener('click', async()=>{
+  const email=document.getElementById('login-email').value.trim();
+  const password=document.getElementById('login-password').value.trim();
+  const errEl=document.getElementById('login-error');
+  errEl.classList.remove('visible');
+  if(!email||!password){errEl.textContent='Please fill in all fields';errEl.classList.add('visible');return;}
+  const btn=document.getElementById('btn-login');
+  btn.textContent='SIGNING IN...';btn.disabled=true;
+  try{
+    const res=await fetch(`${API_BASE}/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    const data=await res.json();
+    if(!data.success){errEl.textContent=data.error||'Login failed';errEl.classList.add('visible');btn.textContent='SIGN IN →';btn.disabled=false;return;}
+    state.userId=data.user_id;state.fullName=data.full_name;state.email=data.email;
+    state.babies=data.babies||[];
+    saveToStorage();
+    if(state.babies.length===0){showScreen('screen-babysetup');}
+    else{state.currentBaby=state.babies[0];saveToStorage();enterDashboard();}
+  }catch(e){errEl.textContent='Cannot connect to server. Is Flask running?';errEl.classList.add('visible');btn.textContent='SIGN IN →';btn.disabled=false;}
+});
+
+// ── AUTH: REGISTER ────────────────────────────────────────────────────────────
+document.getElementById('btn-register').addEventListener('click', async()=>{
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const phone=document.getElementById('reg-phone').value.trim();
+  const password=document.getElementById('reg-password').value.trim();
+  const errEl=document.getElementById('register-error');
+  errEl.classList.remove('visible');
+  if(!name||!email||!password){errEl.textContent='Please fill in all required fields';errEl.classList.add('visible');return;}
+  const btn=document.getElementById('btn-register');
+  btn.textContent='CREATING...';btn.disabled=true;
+  try{
+    const res=await fetch(`${API_BASE}/auth/register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({full_name:name,email,phone,password})});
+    const data=await res.json();
+    if(!data.success){errEl.textContent=data.error||'Registration failed';errEl.classList.add('visible');btn.textContent='CREATE ACCOUNT →';btn.disabled=false;return;}
+    state.userId=data.user_id;state.fullName=name;state.email=email;
+    saveToStorage();
+    showToast('ACCOUNT CREATED! NOW SET UP YOUR BABY');
+    showScreen('screen-babysetup');
+  }catch(e){errEl.textContent='Cannot connect to server. Is Flask running?';errEl.classList.add('visible');btn.textContent='CREATE ACCOUNT →';btn.disabled=false;}
+});
+
+// ── BABY SETUP ────────────────────────────────────────────────────────────────
+document.getElementById('baby-age-range').addEventListener('input',function(){
+  document.getElementById('baby-age-display').textContent=this.value;
+  document.getElementById('baby-age-big').innerHTML=`${this.value} <span>days</span>`;
+});
+
+const selectedAllergies=[];
+document.querySelectorAll('.allergy-chip').forEach(chip=>{
+  chip.addEventListener('click',function(){
+    const val=this.dataset.allergy;
+    if(val==='none'){selectedAllergies.length=0;document.querySelectorAll('.allergy-chip').forEach(c=>c.classList.remove('active'));this.classList.add('active');return;}
+    this.classList.toggle('active');
+    if(this.classList.contains('active')){selectedAllergies.push(val);document.querySelector('[data-allergy="none"]').classList.remove('active');}
+    else{const i=selectedAllergies.indexOf(val);if(i>-1)selectedAllergies.splice(i,1);}
+  });
+});
+
+async function saveBabyProfile(){
+  const nickname=document.getElementById('baby-name').value.trim();
+  if(!nickname){showToast('ENTER BABY NAME FIRST');return;}
+
+  // Reload userId from storage in case state was reset
+  if(!state.userId){
+    const stored=JSON.parse(localStorage.getItem('amberisai_user')||'{}');
+    if(stored.userId){state.userId=stored.userId;state.fullName=stored.fullName;state.email=stored.email;}
+  }
+
+  const body={
+    nickname, user_id:state.userId||null,
+    age_days:+document.getElementById('baby-age-range').value,
+    date_of_birth:document.getElementById('baby-dob').value||null,
+    gender:document.getElementById('baby-gender').value||null,
+    weight_kg:parseFloat(document.getElementById('baby-weight').value)||null,
+    blood_group:document.getElementById('baby-blood').value||null,
+    allergies:selectedAllergies,
+    medical_notes:document.getElementById('baby-notes').value||''
+  };
+
+  console.log('[AmberisAI] Saving baby with user_id:', body.user_id);
+
+  try{
+    const res=await fetch(`${API_BASE}/profile`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await res.json();
+    if(data.success){
+      const baby=await fetch(`${API_BASE}/profile/${data.baby_id}`).then(r=>r.json());
+      state.currentBaby=baby.baby;
+      state.babies.push(state.currentBaby);
+      saveToStorage();
+      showToast('BABY PROFILE SAVED!');
+      enterDashboard();
+    } else {
+      showToast('ERROR: '+(data.error||'Failed to save'));
+    }
+  }catch(e){showToast('ERROR SAVING PROFILE — CHECK FLASK');console.error(e);}
+}
+
+document.getElementById('btn-save-baby').addEventListener('click',saveBabyProfile);
+document.getElementById('btn-skip-baby').addEventListener('click',()=>{
+  if(state.babies.length>0){state.currentBaby=state.babies[0];saveToStorage();enterDashboard();}
+  else{showToast('PLEASE ADD AT LEAST ONE BABY PROFILE');};
+});
+
+// ── ENTER DASHBOARD ───────────────────────────────────────────────────────────
+function enterDashboard(){
+  const baby=state.currentBaby;
+  if(!baby){showToast('NO BABY PROFILE FOUND');return;}
+  document.getElementById('dash-baby-name').textContent=baby.nickname.toUpperCase();
+  document.getElementById('dash-baby-age').textContent=(baby.age_days||'?')+' DAYS';
+  updateHealthScore();
+  showScreen('screen-dashboard');
+  // Init charts first, show demo, then load real data
+  initCharts();
+  fillDemoData(); // show demo immediately so charts aren't blank
+  loadBabyHistory(); // loads real data → auto calls updateCharts()
+  updateProfileTab();
+}
+
+// ── LOGOUT ────────────────────────────────────────────────────────────────────
+document.getElementById('btn-logout').addEventListener('click',()=>{
+  localStorage.removeItem('amberisai_user');
+  localStorage.removeItem('amberisai_baby');
+  state.userId=null;state.currentBaby=null;state.babies=[];
+  showScreen('screen-login');
+  showToast('LOGGED OUT');
+});
+
+// ── BABY SWITCHER ─────────────────────────────────────────────────────────────
+document.getElementById('btn-switch-baby').addEventListener('click',async()=>{
+  // Refresh babies list
+  if(state.userId){
+    try{const r=await fetch(`${API_BASE}/profile/user/${state.userId}`);const d=await r.json();if(d.success)state.babies=d.babies;}catch(e){}
+  }
+  const list=document.getElementById('modal-baby-list');
+  list.innerHTML='';
+  state.babies.forEach(b=>{
+    const div=document.createElement('div');
+    div.className='baby-option'+(state.currentBaby?.id===b.id?' selected':'');
+    div.innerHTML=`<div class="baby-avatar" style="width:36px;height:36px;font-size:16px;">🍼</div><div><div class="baby-option-name">${b.nickname}</div><div class="baby-option-meta">${b.age_days||0} days · ${b.gender||'—'} · ${b.weight_kg||'—'}kg</div></div>`;
+    div.addEventListener('click',()=>{state.currentBaby=b;saveToStorage();document.getElementById('modal-switcher').classList.remove('visible');enterDashboard();});
+    list.appendChild(div);
+  });
+  document.getElementById('modal-switcher').classList.add('visible');
+});
+
+document.getElementById('btn-close-modal').addEventListener('click',()=>document.getElementById('modal-switcher').classList.remove('visible'));
+document.getElementById('btn-add-baby').addEventListener('click',()=>{document.getElementById('modal-switcher').classList.remove('visible');showScreen('screen-babysetup');});
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
+  showTab(btn.dataset.tab);
+  if(btn.dataset.tab==='trends'){
+    if(!state.charts._init) initCharts();
+    updateCharts();
+  }
+}));
+
+// ── PROFILE TAB ───────────────────────────────────────────────────────────────
+function updateProfileTab(){
+  const b=state.currentBaby;
+  if(!b)return;
+  document.getElementById('pv-name').textContent=b.nickname.toUpperCase();
+  const grid=document.getElementById('pv-grid');
+  const fields=[
+    ['Date of Birth',b.date_of_birth||'—'],
+    ['Age',`${b.age_days||0} days`],
+    ['Gender',b.gender||'—'],
+    ['Weight',b.weight_kg?`${b.weight_kg} kg`:'—'],
+    ['Blood Group',b.blood_group||'—'],
+    ['Allergies',(b.allergies||[]).join(', ')||'None'],
+    ['Medical Notes',b.medical_notes||'—']
+  ];
+  grid.innerHTML=fields.map(([k,v])=>`<div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey);margin-bottom:3px;">${k}</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;">${v}</div></div>`).join('');
+  const pv=document.getElementById('parent-view');
+  pv.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">${[['Name',state.fullName],['Email',state.email]].map(([k,v])=>`<div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--grey);margin-bottom:3px;">${k}</div><div style="font-size:15px;">${v}</div></div>`).join('')}</div>`;
+}
+
+// ── AUDIO UPLOAD ──────────────────────────────────────────────────────────────
+document.getElementById('btn-upload-audio').addEventListener('click',()=>document.getElementById('audio-file-input').click());
+document.getElementById('audio-file-input').addEventListener('change',function(){if(this.files[0])processAudioFile(this.files[0]);});
+const audioDropZone=document.getElementById('audio-drop-zone');
+audioDropZone.addEventListener('dragover',e=>{e.preventDefault();audioDropZone.classList.add('dragover');});
+audioDropZone.addEventListener('dragleave',()=>audioDropZone.classList.remove('dragover'));
+audioDropZone.addEventListener('drop',e=>{e.preventDefault();audioDropZone.classList.remove('dragover');const f=e.dataTransfer.files[0];if(f)processAudioFile(f);});
+
+async function processAudioFile(file){
+  const prog=document.getElementById('audio-progress');prog.classList.add('visible');
+  const iv=animateProgress('audio-fill','audio-pct');
+  const fd=new FormData();fd.append('file',file);
+  if(state.currentBaby?.id)fd.append('baby_id',state.currentBaby.id);
+  try{
+    const res=await fetch(`${API_BASE}/predict-audio`,{method:'POST',body:fd});
+    const data=await res.json();
+    clearInterval(iv);completeProgress('audio-fill','audio-pct');
+    setTimeout(()=>{prog.classList.remove('visible');if(data.success){state.audioAnalysis=data;displayAudioResults(data);addToHistory(data,'audio');updateHealthScore();updateCharts();}else showToast('ERROR: '+(data.error||'FAILED').substring(0,50));},400);
+  }catch(e){clearInterval(iv);prog.classList.remove('visible');showToast('CONNECTION ERROR — IS FLASK RUNNING?');}
+}
+
+// ── MIC ───────────────────────────────────────────────────────────────────────
+const micBtn=document.getElementById('btn-mic');
+const waveformContainer=document.getElementById('waveform-container');
+const waveCanvas=document.getElementById('waveform');
+const waveCtx=waveCanvas.getContext('2d');
+let waveAnimFrame,analyserNode;
+
+micBtn.addEventListener('click',()=>{if(state.isRecording)stopRecording();else startRecording();});
+async function startRecording(){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    state.mediaStream=stream;state.mediaRecorder=new MediaRecorder(stream);state.audioChunks=[];
+    state.mediaRecorder.ondataavailable=e=>state.audioChunks.push(e.data);
+    state.mediaRecorder.onstop=()=>{const blob=new Blob(state.audioChunks,{type:'audio/wav'});processAudioFile(new File([blob],'rec.wav',{type:'audio/wav'}));stopWaveformViz();};
+    state.mediaRecorder.start();state.isRecording=true;
+    micBtn.textContent='⏹ STOP';micBtn.classList.add('recording');
+    waveformContainer.classList.add('visible');startWaveformViz(stream);
+    showToast('RECORDING — TAP STOP WHEN DONE');
+  }catch(e){showToast('MIC ACCESS DENIED');}
+}
+function stopRecording(){if(state.mediaRecorder)state.mediaRecorder.stop();if(state.mediaStream)state.mediaStream.getTracks().forEach(t=>t.stop());state.isRecording=false;micBtn.textContent='⏺ LIVE MIC';micBtn.classList.remove('recording');}
+function startWaveformViz(stream){const ac=new(window.AudioContext||window.webkitAudioContext)();const src=ac.createMediaStreamSource(stream);analyserNode=ac.createAnalyser();analyserNode.fftSize=512;src.connect(analyserNode);drawWaveform();}
+function stopWaveformViz(){cancelAnimationFrame(waveAnimFrame);waveCtx.clearRect(0,0,waveCanvas.width,waveCanvas.height);waveformContainer.classList.remove('visible');}
+function drawWaveform(){if(!analyserNode)return;const bl=analyserNode.frequencyBinCount,da=new Uint8Array(bl);analyserNode.getByteTimeDomainData(da);waveCtx.fillStyle='#1a1a1a';waveCtx.fillRect(0,0,waveCanvas.width,waveCanvas.height);waveCtx.lineWidth=2;waveCtx.strokeStyle='#fff';waveCtx.beginPath();const sw=waveCanvas.width/bl;let x=0;for(let i=0;i<bl;i++){const v=da[i]/128,y=(v*waveCanvas.height)/2;i===0?waveCtx.moveTo(x,y):waveCtx.lineTo(x,y);x+=sw;}waveCtx.lineTo(waveCanvas.width,waveCanvas.height/2);waveCtx.stroke();waveAnimFrame=requestAnimationFrame(drawWaveform);}
+
+// ── IMAGE UPLOAD ──────────────────────────────────────────────────────────────
+document.getElementById('btn-upload-img').addEventListener('click',()=>document.getElementById('image-file-input').click());
+document.getElementById('image-file-input').addEventListener('change',function(){if(this.files[0])processImageFile(this.files[0]);});
+const imageDropZone=document.getElementById('image-drop-zone');
+imageDropZone.addEventListener('dragover',e=>{e.preventDefault();imageDropZone.classList.add('dragover');});
+imageDropZone.addEventListener('dragleave',()=>imageDropZone.classList.remove('dragover'));
+imageDropZone.addEventListener('drop',e=>{e.preventDefault();imageDropZone.classList.remove('dragover');const f=e.dataTransfer.files[0];if(f)processImageFile(f);});
+
+async function processImageFile(file){
+  const prog=document.getElementById('image-progress');prog.classList.add('visible');
+  const iv=animateProgress('image-fill','image-pct');
+  const fd=new FormData();fd.append('file',file);
+  if(state.currentBaby?.id)fd.append('baby_id',state.currentBaby.id);
+  try{
+    const res=await fetch(`${API_BASE}/predict-image`,{method:'POST',body:fd});
+    const data=await res.json();
+    clearInterval(iv);completeProgress('image-fill','image-pct');
+    setTimeout(()=>{prog.classList.remove('visible');if(data.success){state.imageAnalysis=data;displayImageResults(data);addToHistory(data,'image');}else showToast('ERROR: '+(data.error||'FAILED').substring(0,50));},400);
+  }catch(e){clearInterval(iv);prog.classList.remove('visible');showToast('CONNECTION ERROR — IS FLASK RUNNING?');}
+}
+
+// ── CAMERA ────────────────────────────────────────────────────────────────────
+const camBtn=document.getElementById('btn-cam');
+const camPreview=document.getElementById('cam-preview');
+const camVideo=document.getElementById('cam-video');
+const snapBtn=document.getElementById('btn-snap');
+camBtn.addEventListener('click',()=>{if(state.isCamOn)stopCamera();else startCamera();});
+async function startCamera(){try{const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});camVideo.srcObject=stream;state.isCamOn=true;camPreview.classList.add('visible');snapBtn.classList.add('visible');camBtn.textContent='🛑 STOP';}catch(e){showToast('CAMERA ACCESS DENIED');}}
+function stopCamera(){if(camVideo.srcObject)camVideo.srcObject.getTracks().forEach(t=>t.stop());state.isCamOn=false;camPreview.classList.remove('visible');snapBtn.classList.remove('visible');camBtn.textContent='📹 LIVE CAM';}
+snapBtn.addEventListener('click',()=>{const c=document.createElement('canvas');c.width=camVideo.videoWidth;c.height=camVideo.videoHeight;c.getContext('2d').drawImage(camVideo,0,0);c.toBlob(blob=>{processImageFile(new File([blob],'snap.jpg',{type:'image/jpeg'}));stopCamera();},'image/jpeg',0.9);});
+
+// ── DISPLAY RESULTS ───────────────────────────────────────────────────────────
+function displayAudioResults(data){
+  const a=data.audio_analysis;
+  document.getElementById('results-panel').classList.add('visible');
+  document.getElementById('audio-results').style.display='block';
+  document.getElementById('image-results').style.display='none';
+  document.getElementById('audio-session-id').innerHTML=`<span class="status-dot"></span> ${data.session_id}`;
+  const cond=a.detected_condition||a.primary_condition||'—';
+  const conf=a.confidence||0;
+  document.getElementById('result-condition').textContent=cond.toUpperCase();
+  document.getElementById('result-confidence').textContent=`CONFIDENCE: ${(conf*100).toFixed(1)}%`;
+  if(a.secondary_condition)document.getElementById('result-secondary').textContent=`SECONDARY: ${a.secondary_condition.toUpperCase()}`;
+  const circ=214,offset=circ-(conf*circ);
+  document.getElementById('gauge-circle').style.strokeDashoffset=offset;
+  document.getElementById('gauge-pct').textContent=Math.round(conf*100)+'%';
+  document.getElementById('low-conf-warning').style.display=a.low_confidence_warning?'flex':'none';
+  const pl=document.getElementById('prob-list');pl.innerHTML='';
+  Object.entries(a.all_probabilities||{}).sort((x,y)=>y[1]-x[1]).forEach(([n,v])=>{
+    const d=document.createElement('div');d.className='prob-item';
+    d.innerHTML=`<div class="prob-name">${n}</div><div class="prob-track"><div class="prob-fill" style="width:0%" data-w="${v*100}"></div></div><div class="prob-val">${(v*100).toFixed(1)}%</div>`;
+    pl.appendChild(d);
+  });
+  setTimeout(()=>document.querySelectorAll('#prob-list .prob-fill[data-w]').forEach(el=>el.style.width=el.dataset.w+'%'),100);
+  if(data.visualization_url){document.getElementById('viz-img').src=`${API_BASE}${data.visualization_url}`;document.getElementById('viz-wrap').style.display='block';}
+  state.conditionCounts[cond]=(state.conditionCounts[cond]||0)+1;
+  document.getElementById('results-panel').scrollIntoView({behavior:'smooth'});
+  showToast(`${cond.toUpperCase()} — ${(conf*100).toFixed(0)}% CONFIDENCE`);
+}
+
+function displayImageResults(data){
+  const a=data.image_analysis;
+  document.getElementById('results-panel').classList.add('visible');
+  document.getElementById('audio-results').style.display='none';
+  document.getElementById('image-results').style.display='block';
+  document.getElementById('image-session-id').innerHTML=`<span class="status-dot"></span> ${data.session_id}`;
+  const cond=a.detected_condition||'—';const conf=a.confidence||0;
+  document.getElementById('image-condition').textContent=cond.toUpperCase();
+  document.getElementById('image-confidence').textContent=`CONFIDENCE: ${(conf*100).toFixed(1)}%`;
+  const pl=document.getElementById('image-prob-list');pl.innerHTML='';
+  Object.entries(a.all_probabilities||{}).sort((x,y)=>y[1]-x[1]).forEach(([n,v])=>{
+    const d=document.createElement('div');d.className='prob-item';
+    d.innerHTML=`<div class="prob-name">${n}</div><div class="prob-track"><div class="prob-fill" style="width:0%" data-w="${v*100}"></div></div><div class="prob-val">${(v*100).toFixed(1)}%</div>`;
+    pl.appendChild(d);
+  });
+  setTimeout(()=>document.querySelectorAll('#image-prob-list .prob-fill[data-w]').forEach(el=>el.style.width=el.dataset.w+'%'),100);
+  document.getElementById('results-panel').scrollIntoView({behavior:'smooth'});
+  showToast(`DETECTED: ${cond.toUpperCase()}`);
+}
+
+// ── HISTORY ───────────────────────────────────────────────────────────────────
+async function loadBabyHistory(){
+  if(!state.currentBaby?.id) return;
+  try{
+    const res=await fetch(`${API_BASE}/history/baby/${state.currentBaby.id}?limit=50`);
+    const data=await res.json();
+    if(data.success){
+      state.sessions=data.sessions;
+      renderHistory();
+      // Update patterns charts with real data
+      if(state.charts._init) updateCharts();
+    }
+  }catch(e){ console.error('[History] Failed:', e); }
+}
+
+function addToHistory(data,type){
+  state.sessions.unshift({...data,type,timestamp:data.timestamp||new Date().toISOString()});
+  renderHistory();
+}
+
+function renderHistory(){
+  const list=document.getElementById('history-list');
+  if(!state.sessions.length){list.innerHTML='<div class="empty-state">No sessions yet.<br/>Run an analysis to get started.</div>';return;}
+  list.innerHTML='';
+  state.sessions.forEach(s=>{
+    const isAudio=s.type==='audio'||s.audio_json;
+    const a=isAudio?(s.audio_json||s.audio_analysis):(s.image_json||s.image_analysis);
+    if(!a)return;
+    const cond=a.detected_condition||a.primary_condition||'—';
+    const conf=a.confidence||0;
+    const card=document.createElement('div');card.className='history-card';
+    card.innerHTML=`
+      <div class="history-card-top">
+        <div class="hist-condition">${isAudio?'🎤':'📷'} ${cond.toUpperCase()}</div>
+        <div class="hist-time">${formatTime(s.timestamp)}</div>
+      </div>
+      <div class="hist-meta">${isAudio?'CRY':'SKIN'} ANALYSIS · ${(conf*100).toFixed(0)}% CONFIDENCE · ${s.session_id||s.id||'—'}</div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+// ── HEALTH SCORE ──────────────────────────────────────────────────────────────
+function updateHealthScore(){document.getElementById('health-score').innerHTML=`${Math.floor(70+Math.random()*25)}<span style="font-size:12px;color:var(--grey)">/100</span>`;}
+
+// ── CHARTS ────────────────────────────────────────────────────────────────────
+// ── PATTERNS ENGINE ───────────────────────────────────────────────────────────
+Chart.defaults.color='#888';
+Chart.defaults.borderColor='#2e2e2e';
+Chart.defaults.font.family="'Barlow Condensed', sans-serif";
+
+const CONDITIONS = ['hungry','discomfort','belly_pain','tired','burping'];
+const COND_LABELS = ['HUNGER','DISCOMFORT','BELLY PAIN','TIRED','BURPING'];
+const COND_COLORS = ['#ffffff','#aaaaaa','#666666','#444444','#222222'];
+const HOURS = ['12A','1A','2A','3A','4A','5A','6A','7A','8A','9A','10A','11A','12P','1P','2P','3P','4P','5P','6P','7P','8P','9P','10P','11P'];
+const DAYS  = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+
+function initCharts(){
+  if(state.charts._init) return;
+  state.charts._init = true;
+
+  // 1. Condition frequency over time (multi-line)
+  state.charts.freqOverTime = new Chart(
+    document.getElementById('chart-freq-over-time').getContext('2d'),{
+    type:'line',
+    data:{
+      labels:['WK-4','WK-3','WK-2','LAST WK','THIS WK'],
+      datasets: CONDITIONS.map((c,i)=>({
+        label: COND_LABELS[i],
+        data:[0,0,0,0,0],
+        borderColor: COND_COLORS[i],
+        backgroundColor: COND_COLORS[i]+'18',
+        borderWidth: i===0?2.5:1.5,
+        pointRadius:3, tension:0.35, fill:false
+      }))
+    },
+    options:{responsive:true,plugins:{legend:{labels:{font:{family:'Barlow Condensed',weight:'700',size:10},color:'#888',boxWidth:12}}},
+      scales:{x:{grid:{color:'#1a1a1a'},ticks:{font:{family:'Barlow Condensed',weight:'700',size:9}}},
+              y:{grid:{color:'#1a1a1a'},ticks:{font:{family:'Barlow Condensed',weight:'700',size:9}},beginAtZero:true}}}
+  });
+
+  // 2. Donut
+  state.charts.donut = new Chart(
+    document.getElementById('chart-donut').getContext('2d'),{
+    type:'doughnut',
+    data:{labels:COND_LABELS,datasets:[{data:[0,0,0,0,0],backgroundColor:COND_COLORS,borderColor:'#000',borderWidth:3}]},
+    options:{responsive:true,cutout:'65%',plugins:{legend:{position:'bottom',labels:{font:{family:'Barlow Condensed',weight:'700',size:10},color:'#888',padding:8}}}}
+  });
+
+  // 3. Hourly distribution bar
+  state.charts.timeline = new Chart(
+    document.getElementById('chart-timeline').getContext('2d'),{
+    type:'bar',
+    data:{labels:HOURS,datasets:[{data:new Array(24).fill(0),backgroundColor:'#fff',borderWidth:0,barThickness:8}]},
+    options:{responsive:true,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'#1a1a1a'},ticks:{font:{family:'Barlow Condensed',weight:'700',size:8},maxRotation:0}},
+              y:{grid:{color:'#1a1a1a'},ticks:{font:{family:'Barlow Condensed',weight:'700',size:9}},beginAtZero:true}}}
+  });
+
+  // 4. Day of week bar
+  state.charts.dow = new Chart(
+    document.getElementById('chart-dow').getContext('2d'),{
+    type:'bar',
+    data:{labels:DAYS,datasets:[{data:new Array(7).fill(0),backgroundColor:'#888',borderWidth:0,barThickness:14}]},
+    options:{responsive:true,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'#1a1a1a'},ticks:{font:{family:'Barlow Condensed',weight:'700',size:9}}},
+              y:{grid:{color:'#1a1a1a'},ticks:{display:false},beginAtZero:true}}}
+  });
+
+  // 5. Confidence trend line
+  state.charts.confTrend = new Chart(
+    document.getElementById('chart-confidence-trend').getContext('2d'),{
+    type:'line',
+    data:{labels:[],datasets:[{label:'Confidence %',data:[],borderColor:'#fff',backgroundColor:'rgba(255,255,255,0.06)',borderWidth:2,pointRadius:3,tension:0.3,fill:true}]},
+    options:{responsive:true,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'#1a1a1a'},ticks:{font:{family:'Barlow Condensed',weight:'700',size:8},maxTicksLimit:10,maxRotation:30}},
+              y:{grid:{color:'#1a1a1a'},ticks:{font:{family:'Barlow Condensed',weight:'700',size:9}},min:0,max:100}}}
+  });
+
+  // 6. Weekly total count
+  state.charts.trends = new Chart(
+    document.getElementById('chart-trends').getContext('2d'),{
+    type:'bar',
+    data:{labels:['WK-4','WK-3','WK-2','LAST WK','THIS WK'],datasets:[{label:'Sessions',data:[0,0,0,0,0],backgroundColor:['#444','#555','#666','#888','#fff'],borderWidth:0,borderRadius:2}]},
+    options:{responsive:true,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'#1a1a1a'},ticks:{font:{family:'Barlow Condensed',weight:'700',size:9}}},
+              y:{grid:{color:'#1a1a1a'},ticks:{font:{family:'Barlow Condensed',weight:'700',size:9}},beginAtZero:true}}}
+  });
+
+  // 7. Session gaps
+  state.charts.gaps = new Chart(
+    document.getElementById('chart-gaps').getContext('2d'),{
+    type:'line',
+    data:{labels:[],datasets:[{label:'Hours Between Sessions',data:[],borderColor:'#666',backgroundColor:'rgba(100,100,100,0.06)',borderWidth:1.5,pointRadius:2,tension:0.3,fill:true}]},
+    options:{responsive:true,plugins:{legend:{display:false}},
+      scales:{x:{display:false},
+              y:{grid:{color:'#1a1a1a'},ticks:{font:{family:'Barlow Condensed',weight:'700',size:9}},beginAtZero:true}}}
+  });
+
+  // 8. Skin vs Cry dual axis
+  state.charts.skinCry = new Chart(
+    document.getElementById('chart-skin-cry').getContext('2d'),{
+    type:'bar',
+    data:{labels:[],datasets:[
+      {label:'CRY EVENTS',data:[],backgroundColor:'rgba(255,255,255,0.8)',borderWidth:0,yAxisID:'y'},
+      {label:'SKIN ISSUES',data:[],backgroundColor:'rgba(255,204,0,0.7)',borderWidth:0,yAxisID:'y1'}
+    ]},
+    options:{responsive:true,plugins:{legend:{labels:{font:{family:'Barlow Condensed',weight:'700',size:10},color:'#888',boxWidth:12}}},
+      scales:{
+        x:{grid:{color:'#1a1a1a'},ticks:{font:{family:'Barlow Condensed',weight:'700',size:9},maxTicksLimit:8}},
+        y:{grid:{color:'#1a1a1a'},ticks:{font:{family:'Barlow Condensed',weight:'700',size:9}},beginAtZero:true,position:'left'},
+        y1:{ticks:{font:{family:'Barlow Condensed',weight:'700',size:9}},beginAtZero:true,position:'right',grid:{display:false}}
+      }}
+  });
+}
+
+// ── HEATMAP RENDERER ─────────────────────────────────────────────────────────
+function renderHeatmap(heatmapData){
+  // heatmapData[condition][hour] = count
+  const container = document.getElementById('heatmap-container');
+
+  // Column hour labels
+  let labelsHTML = `<div class="heatmap-col-labels">`;
+  for(let h=0;h<24;h++) labelsHTML += `<div class="heatmap-col-label">${h%6===0?HOURS[h]:''}</div>`;
+  labelsHTML += '</div>';
+
+  let tableHTML = `<table class="heatmap-table"><tbody>`;
+  CONDITIONS.forEach((cond,ci)=>{
+    const rowData = heatmapData[cond] || new Array(24).fill(0);
+    const maxVal = Math.max(...rowData, 1);
+    tableHTML += `<tr><td class="heatmap-row-label">${COND_LABELS[ci]}</td>`;
+    for(let h=0;h<24;h++){
+      const val = rowData[h]||0;
+      const intensity = Math.round((val/maxVal)*255);
+      const bg = val===0 ? '#111' : `rgba(255,255,255,${(val/maxVal)*0.85+0.05})`;
+      tableHTML += `<td class="heatmap-cell" style="background:${bg}" data-tip="${COND_LABELS[ci]} @ ${HOURS[h]}: ${val} events"></td>`;
+    }
+    tableHTML += '</tr>';
+  });
+  tableHTML += '</tbody></table>';
+  container.innerHTML = labelsHTML + tableHTML;
+}
+
+// ── PATTERN INSIGHTS GENERATOR ────────────────────────────────────────────────
+function generateInsights(sessions, stats){
+  const insights = [];
+  const {topCond, peakHour, totalSessions, avgConf, weeklyTrend, dowCounts, condCounts} = stats;
+
+  // Insight 1: Most common cry
+  if(topCond){
+    const pct = totalSessions>0 ? Math.round((condCounts[topCond]||0)/totalSessions*100) : 0;
+    insights.push({icon:'🍼', badge:'PATTERN', badgeType:'info',
+      title:`${topCond.toUpperCase()} is the dominant cry (${pct}% of sessions)`,
+      text:`This baby's most frequent cry signal is ${topCond}. ${topCond==='hungry'?'Consider reviewing feeding intervals — hunger cries this frequent may indicate feeds need to be more regular or volume increased.':topCond==='discomfort'?'Repeated discomfort signals may relate to gas, colic, or positional issues. Track if it occurs at specific times post-feeding.':topCond==='belly_pain'?'Frequent belly pain signals warrant attention. Note if they correlate with feeding times or specific formulas/foods.':'Monitor this pattern closely and discuss with your pediatrician.'}`});
+  }
+
+  // Insight 2: Peak hour
+  if(peakHour !== null){
+    const hr = parseInt(peakHour);
+    const period = hr<6?'late night':hr<12?'morning':hr<17?'afternoon':hr<21?'evening':'night';
+    insights.push({icon:'⏰', badge:hr<6||hr>=21?'ALERT':'INFO', badgeType:hr<6||hr>=21?'warn':'info',
+      title:`Peak crying happens at ${HOURS[hr]} (${period})`,
+      text:`${hr<6||hr>=21?'Night-time crying at this frequency can indicate feeding schedule misalignment, overtiredness, or discomfort from lying flat. Try a pre-bed feeding routine and ensure burping is thorough.':'Daytime crying concentrated at this hour may align with hunger cycles or nap transitions. Try adjusting feeding/sleep schedule by 30 minutes.'}`});
+  }
+
+  // Insight 3: Weekly trend
+  if(weeklyTrend > 0.2){
+    insights.push({icon:'📈', badge:'INCREASING', badgeType:'warn',
+      title:`Cry frequency increased ${Math.round(weeklyTrend*100)}% this week vs last`,
+      text:`An upward trend in cry events this week could indicate a growth spurt, developmental leap, illness onset, or environmental change. Compare with any changes in feeding, sleep environment, or recent vaccinations.`});
+  } else if(weeklyTrend < -0.2){
+    insights.push({icon:'📉', badge:'IMPROVING', badgeType:'good',
+      title:`Cry frequency decreased ${Math.round(Math.abs(weeklyTrend)*100)}% this week vs last`,
+      text:`Great news! Fewer cry events this week suggests your care strategies are working. The baby's patterns are stabilizing. Maintain your current routine.`});
+  } else {
+    insights.push({icon:'➡️', badge:'STABLE', badgeType:'info',
+      title:`Cry frequency is stable week over week`,
+      text:`Consistent patterns make it easier to anticipate needs. Use Nurse Amber chat to get advice on optimizing the current routine.`});
+  }
+
+  // Insight 4: Day of week
+  const maxDow = dowCounts.indexOf(Math.max(...dowCounts));
+  const minDow = dowCounts.indexOf(Math.min(...dowCounts));
+  if(Math.max(...dowCounts) > 0){
+    insights.push({icon:'📅', badge:'DAY PATTERN', badgeType:'info',
+      title:`${DAYS[maxDow]} is the hardest day, ${DAYS[minDow]} is the calmest`,
+      text:`Weekly patterns often reflect caregiver routine changes (weekday vs weekend), feeding schedule differences, or environmental noise/activity levels. If ${DAYS[maxDow]} is consistently hard, consider what's different about that day.`});
+  }
+
+  // Insight 5: Confidence trend
+  if(avgConf > 0){
+    insights.push({icon:'🎯', badge:avgConf>75?'HIGH ACCURACY':'MODERATE', badgeType:avgConf>75?'good':'info',
+      title:`Average detection confidence is ${avgConf.toFixed(0)}%`,
+      text:`${avgConf>80?'High confidence detections mean the AI model has clear, distinct cry signals to work with. Your recordings are high quality.':avgConf>60?'Moderate confidence — try recording in a quieter environment, or move the microphone closer to the baby for stronger signal.':'Lower confidence can occur with background noise, short recordings, or atypical cry patterns. Ensure recordings are at least 3 seconds of clear crying.'}`});
+  }
+
+  // Insight 6: Sessions count
+  if(totalSessions >= 10){
+    insights.push({icon:'📊', badge:'DATA RICH', badgeType:'good',
+      title:`${totalSessions} sessions recorded — patterns are reliable`,
+      text:`With this many sessions, the pattern charts are statistically meaningful. You can confidently use these insights to adjust feeding schedules, sleep routines, and care strategies.`});
+  } else {
+    insights.push({icon:'📊', badge:'BUILDING DATA', badgeType:'info',
+      title:`${totalSessions} sessions recorded — keep logging`,
+      text:`The more sessions you record, the more accurate the pattern analysis becomes. Aim for at least 10 sessions across different times of day to get reliable insights.`});
+  }
+
+  return insights;
+}
+
+// ── MAIN PATTERNS UPDATER ─────────────────────────────────────────────────────
+function updateCharts(){
+  if(!state.charts._init) initCharts();
+
+  const sessions = state.sessions || [];
+  const baby = state.currentBaby;
+
+  // Update header
+  if(baby){
+    document.getElementById('patterns-baby-name').textContent = (baby.nickname||'BABY').toUpperCase() + ' — PATTERNS';
+    document.getElementById('patterns-last-updated').textContent =
+      `${sessions.length} SESSIONS ANALYSED · LAST UPDATED ${new Date().toLocaleTimeString()}`;
+  }
+
+  if(sessions.length === 0){
+    // Fill with demo data so charts still look good
+    fillDemoData();
+    return;
+  }
+
+  // ── COMPUTE STATS FROM REAL SESSIONS ──────────────────────────────────────
+
+  const now = new Date();
+  const condCounts = {};
+  const hourCounts = new Array(24).fill(0);
+  const dowCounts  = new Array(7).fill(0);
+  const heatmapData = {};
+  const weekBuckets = [0,0,0,0,0]; // wk-4 to this week
+  const confValues  = [];
+  const confLabels  = [];
+  const gapValues   = [];
+  const gapLabels   = [];
+  const skinByDay   = {};
+  const cryByDay    = {};
+  const freqByWeek  = {}; // condition -> [wk-4..thisWk]
+
+  CONDITIONS.forEach(c=>{condCounts[c]=0; heatmapData[c]=new Array(24).fill(0); freqByWeek[c]=[0,0,0,0,0];});
+
+  let sortedSessions = [...sessions].sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
+  let prevTime = null;
+
+  sortedSessions.forEach((s,idx)=>{
+    const ts = new Date(s.timestamp);
+    const hour = ts.getHours();
+    const dow  = (ts.getDay()+6)%7; // Mon=0
+    const dayKey = ts.toISOString().split('T')[0];
+    const msAgo = now - ts;
+    const weeksAgo = Math.min(4, Math.floor(msAgo / (7*24*3600*1000)));
+    const weekIdx  = 4 - weeksAgo;
+
+    // Audio analysis
+    const a = s.audio_json || s.audio_analysis;
+    if(a){
+      const cond = a.detected_condition || a.primary_condition;
+      const conf = a.confidence || 0;
+      if(cond && CONDITIONS.includes(cond)){
+        condCounts[cond] = (condCounts[cond]||0)+1;
+        heatmapData[cond][hour]++;
+        freqByWeek[cond][Math.max(0,weekIdx)]++;
+      }
+      hourCounts[hour]++;
+      dowCounts[dow]++;
+      weekBuckets[Math.max(0,weekIdx)]++;
+      confValues.push(Math.round(conf*100));
+      confLabels.push(ts.toLocaleDateString('en-GB',{day:'numeric',month:'short'}));
+      cryByDay[dayKey] = (cryByDay[dayKey]||0)+1;
+
+      // Session gap
+      if(prevTime){
+        const gapHrs = Math.round((ts-prevTime)/3600000*10)/10;
+        gapValues.push(gapHrs);
+        gapLabels.push(`#${idx}`);
+      }
+      prevTime = ts;
+    }
+
+    // Image analysis
+    const img = s.image_json || s.image_analysis;
+    if(img){
+      const c = img.detected_condition||'';
+      if(c && c!=='normal') skinByDay[dayKey]=(skinByDay[dayKey]||0)+1;
+    }
+  });
+
+  const totalSessions = condCounts ? Object.values(condCounts).reduce((a,b)=>a+b,0) : 0;
+  const topCond = CONDITIONS.reduce((a,b)=>(condCounts[a]||0)>=(condCounts[b]||0)?a:b, CONDITIONS[0]);
+  const peakHour = hourCounts.indexOf(Math.max(...hourCounts));
+  const avgConf = confValues.length ? confValues.reduce((a,b)=>a+b,0)/confValues.length : 0;
+  const thisWeek = weekBuckets[4];
+  const lastWeek = weekBuckets[3]||1;
+  const weeklyTrend = (thisWeek - lastWeek) / lastWeek;
+
+  // ── UPDATE KPI CARDS ────────────────────────────────────────────────────────
+  document.getElementById('kpi-total-sessions').textContent = totalSessions || sessions.length;
+  document.getElementById('kpi-top-condition').textContent  = topCond ? topCond.toUpperCase() : '—';
+  document.getElementById('kpi-peak-hour').textContent      = peakHour>=0 ? HOURS[peakHour] : '—';
+  document.getElementById('kpi-avg-confidence').textContent = avgConf>0 ? avgConf.toFixed(0)+'%' : '—';
+  const days = new Set(sortedSessions.map(s=>s.timestamp?.split('T')[0])).size;
+  document.getElementById('kpi-cry-free-days').textContent  = days || '—';
+  const trendArrow = weeklyTrend>0.1 ? `↑${Math.round(weeklyTrend*100)}%` : weeklyTrend<-0.1 ? `↓${Math.round(Math.abs(weeklyTrend)*100)}%` : '→ STABLE';
+  document.getElementById('kpi-trend-arrow').textContent    = trendArrow;
+
+  // ── UPDATE CHARTS ──────────────────────────────────────────────────────────
+
+  // Freq over time (multi-line)
+  CONDITIONS.forEach((c,i)=>{
+    state.charts.freqOverTime.data.datasets[i].data = freqByWeek[c];
+  });
+  state.charts.freqOverTime.update();
+
+  // Donut
+  state.charts.donut.data.datasets[0].data = CONDITIONS.map(c=>condCounts[c]||0);
+  state.charts.donut.update();
+
+  // Hourly
+  state.charts.timeline.data.datasets[0].data = hourCounts;
+  // Color the peak hour white, others grey
+  state.charts.timeline.data.datasets[0].backgroundColor = hourCounts.map((_,i)=>i===peakHour?'#fff':'#444');
+  state.charts.timeline.update();
+
+  // Day of week
+  state.charts.dow.data.datasets[0].data = dowCounts;
+  const maxDow = dowCounts.indexOf(Math.max(...dowCounts));
+  state.charts.dow.data.datasets[0].backgroundColor = dowCounts.map((_,i)=>i===maxDow?'#fff':'#555');
+  state.charts.dow.update();
+
+  // Confidence trend
+  state.charts.confTrend.data.labels   = confLabels;
+  state.charts.confTrend.data.datasets[0].data = confValues;
+  state.charts.confTrend.update();
+
+  // Weekly totals
+  state.charts.trends.data.datasets[0].data = weekBuckets;
+  state.charts.trends.update();
+
+  // Gaps
+  state.charts.gaps.data.labels = gapLabels;
+  state.charts.gaps.data.datasets[0].data = gapValues;
+  state.charts.gaps.update();
+
+  // Skin vs Cry
+  const allDays = [...new Set([...Object.keys(cryByDay),...Object.keys(skinByDay)])].sort();
+  state.charts.skinCry.data.labels = allDays.map(d=>new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short'}));
+  state.charts.skinCry.data.datasets[0].data = allDays.map(d=>cryByDay[d]||0);
+  state.charts.skinCry.data.datasets[1].data = allDays.map(d=>skinByDay[d]||0);
+  state.charts.skinCry.update();
+
+  // Heatmap
+  renderHeatmap(heatmapData);
+
+  // Insights
+  const insights = generateInsights(sessions, {topCond,peakHour,totalSessions,avgConf,weeklyTrend,dowCounts,condCounts});
+  const insightEl = document.getElementById('pattern-insights-list');
+  insightEl.innerHTML = insights.map(ins=>`
+    <div class="insight-item">
+      <div class="insight-icon">${ins.icon}</div>
+      <div class="insight-text">
+        <strong><span class="insight-badge ${ins.badgeType}">${ins.badge}</span>${ins.title}</strong>
+        ${ins.text}
+      </div>
+    </div>`).join('');
+}
+
+function fillDemoData(){
+  // Demo so charts don't look empty on first load
+  const demo = {hungry:12,discomfort:5,belly_pain:3,tired:4,burping:2};
+  document.getElementById('kpi-total-sessions').textContent='26 (DEMO)';
+  document.getElementById('kpi-top-condition').textContent='HUNGRY';
+  document.getElementById('kpi-peak-hour').textContent='3AM';
+  document.getElementById('kpi-avg-confidence').textContent='82%';
+  document.getElementById('kpi-cry-free-days').textContent='7';
+  document.getElementById('kpi-trend-arrow').textContent='↑12%';
+  state.charts.donut.data.datasets[0].data=Object.values(demo);state.charts.donut.update();
+  state.charts.trends.data.datasets[0].data=[4,5,6,5,6];state.charts.trends.update();
+  state.charts.freqOverTime.data.datasets[0].data=[3,4,5,4,5];
+  state.charts.freqOverTime.data.datasets[1].data=[1,2,1,2,1];
+  state.charts.freqOverTime.update();
+  const demoHours=[0,0,1,2,1,0,0,1,2,1,0,0,1,0,0,1,2,1,0,1,0,1,2,3];
+  state.charts.timeline.data.datasets[0].data=demoHours;
+  state.charts.timeline.data.datasets[0].backgroundColor=demoHours.map((_,i)=>i===23?'#fff':'#444');
+  state.charts.timeline.update();
+  state.charts.dow.data.datasets[0].data=[3,4,3,4,5,2,2];
+  state.charts.dow.data.datasets[0].backgroundColor=['#555','#555','#555','#555','#fff','#555','#555'];
+  state.charts.dow.update();
+  const confDemo=[75,80,82,78,85,82,88,84,86,83];
+  state.charts.confTrend.data.labels=confDemo.map((_,i)=>`S${i+1}`);
+  state.charts.confTrend.data.datasets[0].data=confDemo;state.charts.confTrend.update();
+  state.charts.gaps.data.labels=['S1','S2','S3','S4','S5'];
+  state.charts.gaps.data.datasets[0].data=[4.5,3.2,5.1,2.8,4.0];state.charts.gaps.update();
+  // skinCry demo
+  state.charts.skinCry.data.labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  state.charts.skinCry.data.datasets[0].data=[3,4,2,5,3,2,3];
+  state.charts.skinCry.data.datasets[1].data=[0,1,0,1,0,1,0];
+  state.charts.skinCry.update();
+  const demoHM={};
+  CONDITIONS.forEach(c=>{demoHM[c]=new Array(24).fill(0);});
+  demoHM.hungry=[0,1,2,3,1,0,0,1,1,0,1,0,0,1,0,0,1,0,1,0,1,0,1,2];
+  demoHM.discomfort=[0,0,1,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0];
+  renderHeatmap(demoHM);
+  document.getElementById('pattern-insights-list').innerHTML=`<div class="insight-item"><div class="insight-icon">💡</div><div class="insight-text"><strong><span class="insight-badge info">DEMO</span>NO REAL SESSIONS YET</strong>Run cry or skin analyses to populate real pattern insights for this baby.</div></div>`;
+}
+
+document.getElementById('btn-refresh-patterns').addEventListener('click', async ()=>{
+  showToast('REFRESHING PATTERNS...');
+  await loadBabyHistory();
+  updateCharts();
+  showToast('PATTERNS REFRESHED ✓');
+});
+
+// ── CHAT ──────────────────────────────────────────────────────────────────────
+let _apiKey='';
+document.getElementById('btn-save-key').addEventListener('click',()=>{
+  const val=document.getElementById('deepseek-key-input').value.trim();
+  if(val&&(val.startsWith('sk-')||val.startsWith('gsk_'))&&val.length>15){
+    _apiKey=val;document.getElementById('key-status').textContent='🟢';
+    showToast('KEY SAVED — NURSE AMBER IS READY!');
+    addBubble("I'm ready! Ask me anything about your baby. I'll give you detailed, personalised care advice 💚",'assistant');
+  }else{document.getElementById('key-status').textContent='🔴';showToast('INVALID KEY — MUST START WITH sk- OR gsk_');}
+});
+
+function addBubble(text,role){
+  const b=document.createElement('div');b.className=`chat-bubble ${role}`;
+  const name=role==='user'?(state.currentBaby?.nickname||'PARENT')+"'S PARENT":'NURSE AMBER';
+  b.innerHTML=`<div class="bubble-name">${name}</div><div class="bubble-text"></div>`;
+  document.getElementById('chat-messages').appendChild(b);
+  document.getElementById('chat-messages').scrollTop=99999;
+  if(text)b.querySelector('.bubble-text').textContent=text;
+  return b;
+}
+function appendToBubble(b,text){b.querySelector('.bubble-text').textContent+=text;document.getElementById('chat-messages').scrollTop=99999;}
+
+async function sendChat(msg){
+  if(!msg.trim())return;
+  if(!_apiKey){showToast('PASTE YOUR GROQ KEY ABOVE AND CLICK SAVE FIRST!');document.getElementById('deepseek-key-input').focus();return;}
+  addBubble(msg,'user');
+  document.getElementById('chat-input').value='';
+  document.getElementById('btn-send').disabled=true;
+  document.getElementById('typing-indicator').classList.add('visible');
+  const body={query:msg,api_key:_apiKey,session_id:state.audioAnalysis?.session_id||state.imageAnalysis?.session_id||null,baby_id:state.currentBaby?.id||null};
+  try{
+    const response=await fetch(`${API_BASE}/agent`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    document.getElementById('typing-indicator').classList.remove('visible');
+    if(!response.ok){addBubble(`Server error ${response.status}. Check Flask terminal.`,'assistant');document.getElementById('btn-send').disabled=false;return;}
+    const amberBubble=addBubble('','assistant');
+    const reader=response.body.getReader();const decoder=new TextDecoder();let buffer='';let hasContent=false;
+    while(true){
+      const{done,value}=await reader.read();if(done)break;
+      buffer+=decoder.decode(value,{stream:true});const lines=buffer.split('\n');buffer=lines.pop();
+      for(const line of lines){
+        if(!line.startsWith('data:'))continue;const raw=line.slice(5).trim();if(raw==='[DONE]')continue;
+        try{const p=JSON.parse(raw);if(p.error){appendToBubble(amberBubble,'⚠️ '+p.error);if(p.error.toLowerCase().includes('api key')){_apiKey='';document.getElementById('key-status').textContent='🔴';}}else if(p.text){appendToBubble(amberBubble,p.text);hasContent=true;}}catch(e){}
+      }
+    }
+    if(!hasContent)appendToBubble(amberBubble,'No response received. Check Flask terminal.');
+  }catch(e){document.getElementById('typing-indicator').classList.remove('visible');addBubble('Could not reach Flask. Make sure python app.py is running.','assistant');}
+  document.getElementById('btn-send').disabled=false;
+}
+
+document.getElementById('btn-send').addEventListener('click',()=>sendChat(document.getElementById('chat-input').value));
+document.getElementById('chat-input').addEventListener('keypress',e=>{if(e.key==='Enter')sendChat(document.getElementById('chat-input').value);});
+
+if('webkitSpeechRecognition' in window||'SpeechRecognition' in window){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const rec=new SR();rec.lang='en-US';
+  rec.onresult=e=>{const t=e.results[0][0].transcript;document.getElementById('chat-input').value=t;sendChat(t);document.getElementById('btn-voice').classList.remove('listening');document.getElementById('btn-voice').textContent='🎙';};
+  rec.onend=()=>{document.getElementById('btn-voice').classList.remove('listening');document.getElementById('btn-voice').textContent='🎙';};
+  document.getElementById('btn-voice').addEventListener('click',()=>{if(document.getElementById('btn-voice').classList.contains('listening')){rec.stop();}else{rec.start();document.getElementById('btn-voice').classList.add('listening');document.getElementById('btn-voice').textContent='⏹';showToast('LISTENING...');}});
+}else{document.getElementById('btn-voice').style.display='none';}
+
+// ── AUTO LOGIN ON PAGE LOAD ───────────────────────────────────────────────────
+window.addEventListener('load',async()=>{
+  // Init Google Sign-In
+  setTimeout(initGoogleAuth, 800);
+  if(loadFromStorage()&&state.userId){
+    try{
+      const res=await fetch(`${API_BASE}/auth/me/${state.userId}`);
+      const data=await res.json();
+      if(data.success){
+        state.babies=data.babies;
+        if(state.currentBaby){
+          // Refresh current baby data
+          const found=state.babies.find(b=>b.id===state.currentBaby.id);
+          if(found)state.currentBaby=found;
+        }
+        if(state.currentBaby){enterDashboard();}
+        else if(state.babies.length>0){state.currentBaby=state.babies[0];saveToStorage();enterDashboard();}
+        else{showScreen('screen-babysetup');}
+        return;
+      }
+    }catch(e){}
+  }
+  showScreen('screen-landing');
+});
+</script>
+</body>
+</html>

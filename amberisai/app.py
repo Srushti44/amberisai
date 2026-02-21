@@ -1,0 +1,27 @@
+from flask import Flask
+from flask_cors import CORS
+from routes.predict import predict_bp
+from routes.auth import auth_bp
+from routes.agent import agent_bp
+from models.database import init_db
+import os
+
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
+app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['STATIC_FOLDER'] = 'static/visuals'
+
+os.makedirs('uploads', exist_ok=True)
+os.makedirs('static/visuals', exist_ok=True)
+os.makedirs('data', exist_ok=True)
+
+init_db()
+
+app.register_blueprint(predict_bp)
+app.register_blueprint(auth_bp)
+app.register_blueprint(agent_bp)
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000, threaded=True)
